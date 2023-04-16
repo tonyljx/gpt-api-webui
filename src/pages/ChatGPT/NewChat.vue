@@ -10,18 +10,17 @@
 
     <div class="chat-box-content-container">
       <div v-for="(message,index) in messages" :key="index">
-        <UserMessage :date="message.date" v-if="message.type==='user'">
-          {{ message.message }}
+        <UserMessage
+            :date="message.date"
+            v-if="message.type==='user'"
+            :message="message.message"
+        >
         </UserMessage>
 
-        <GptMessage :date="message.date" v-else>
-          {{ message.message }}
+        <GptMessage :date="message.date" :message="message.message" v-else>
+
         </GptMessage>
-
       </div>
-
-
-
     </div>
 
     <div class="chat-box-footer">
@@ -44,7 +43,7 @@
       >
         Chat
       </el-button>
-      <!--      <button >Submit</button>-->
+
     </div>
 
   </div>
@@ -55,24 +54,24 @@
 <script setup>
 import UserMessage from "@/components/chat/UserMessage.vue";
 import GptMessage from "@/components/chat/GptMessage.vue";
-import {onMounted, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {nextTick} from "vue";
 import {Position} from '@element-plus/icons-vue'
 import TheUpload from "@/components/Utils/TheUpload.vue";
 import {fetchEventSource} from '@microsoft/fetch-event-source';
-
 import axios from 'axios';
 
 const date = "2023年04月09日15:38:07";
 
 const messages = ref([
   {
-    "message": "你好,chatgpt,请问你有什么能力呢.你是谁？为什么你可以回答我的问题，我应该如何训练能做到你这也的训练样本",
+    "message": "请问你是谁?"
+    ,
     "type": "user",
     "date": "2023年04月09日15:51:40",
   },
   {
-    "message": "我是chatgpt,我是一名人工智能助手，请问有什么可以帮助你的",
+    "message": "我是GPT,一个人工智能模型,请问有什么可以帮助你的?",
     "type": "chatgpt",
     "date": "2023年04月09日15:52:37",
   }
@@ -91,28 +90,6 @@ const options = {
   timeZone: "Asia/Shanghai" // 指定时区为北京时间
 };
 
-// 这是v1
-// onMounted(() => {
-//   const eventSource = new EventSource('/info');
-//   eventSource.onopen = () => {
-//     console.log('Connection established');
-//   };
-//   eventSource.onmessage = (event) => {
-//     if(event.data === '[DONE]'){
-//       console.log(event.data);
-//       console.log("Stream Finished");
-//       // eventSource.close();
-//     }else{
-//       const message = JSON.parse(event.data);
-//       console.log(message);
-//     }
-//
-//   };
-//   // eventSource.onerror = (event) => {
-//   //   console.error('EventSource onError触发:', event.type, event.message, event.eventPhase);
-//   // };
-// })
-
 
 function submitMessage() {
   // console.log("submit Messgae: "+newMessage.value);
@@ -129,8 +106,6 @@ function submitMessage() {
 
   // 把消息滑动到最下方
   scrollToBottom();
-
-
   axios.post('/api/stream',
       {
         model: 'gpt-3.5-turbo',
@@ -160,6 +135,7 @@ async function submitMessage_fetch() {
     "type": "user",
     "date": new Date().toLocaleString('zh-CN', options),
   }
+
   messages.value.push(Message);
 
   // 把消息滑动到最下方
@@ -168,6 +144,15 @@ async function submitMessage_fetch() {
   console.log("发送消息: ", newMessage.value);
   const message = newMessage.value;
   newMessage.value = "";
+
+  const GPTMessage = {
+    "message": '',
+    "type": "chatgpt",
+    "date": new Date().toLocaleString('zh-CN', options),
+  };
+
+  messages.value.push(GPTMessage);
+
   await fetchEventSource('/api/stream', {
     method: 'POST',
     headers: {
@@ -178,9 +163,23 @@ async function submitMessage_fetch() {
       messages: [{role: 'user', content: message}]
     }),
     onmessage(event) {
-      console.log(event.data);
+      console.log("Receive: "+event.data);
+      // GPTMessage.message +=  JSON.parse(event.data);
+      let length = messages.value.length;
+      messages.value[length-1].message += JSON.parse(event.data);
+      // console.log("父组件收到的信息: "+GPTMessage.message);
+      // messages.value.pop()
+      // messages.value.push(GPTMessage);
+      scrollToBottom();
     }
   });
+
+  // setInterval(()=>{
+  //   console.log("GPTMESSAGE: ",GPTMessage.message);
+  //   GPTMessage.message += "更新消息";
+  // },1000)
+
+
 }
 
 
@@ -220,7 +219,7 @@ function handleShiftEnter() {
 
 .chat-box-container {
   /* 两列的设置 */
-  flex-grow: 1;
+  flex-grow: 3;
   /* border: 1px solid rgba(0,0,0,0.26); */
   padding: 1em;
   margin-right: 1em;
@@ -256,5 +255,4 @@ textarea {
 .config {
   flex-grow: 1;
 }
-
 </style>

@@ -38,8 +38,6 @@ app.post('/api/sse', (req,res) => {
     setInterval(()=>{
         res.write("data: " + (new Date()) + "\n\n");
     },1000);
-    // console.log(req.body);
-    // res.end(JSON.stringify(req.body, null, 2))
 })
 
 app.post('/api/stream',doResponse);

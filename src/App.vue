@@ -11,6 +11,7 @@ import ChatGpt from "@/pages/ChatGPT/ChatGpt.vue";
     <router-link to="/">首页  </router-link>
     <router-link to="/about">关于</router-link>
     <router-link to="/newchat">newChat</router-link>
+    <router-link to="/md">Markdown格式预览</router-link>
   </div>
   
   <main>

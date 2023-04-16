@@ -5,6 +5,7 @@ import Beishan from "@/pages/Beishan.vue";
 import Chat from "@/pages/ChatGPT/Chat.vue";
 import ChatGpt from "@/pages/ChatGPT/ChatGpt.vue";
 import NewChat from "@/pages/ChatGPT/NewChat.vue";
+import MarkDownPage from "@/pages/MarkDown.vue";
 const routes = [
     {
         path: '/',
@@ -35,6 +36,11 @@ const routes = [
         path: '/newchat',
         name: 'newChat',
         component: NewChat,
+    },
+    {
+        path: '/md',
+        name: 'md',
+        component: MarkDownPage,
     }
 ]
 

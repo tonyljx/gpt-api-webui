@@ -6,8 +6,10 @@
     </div>
 
     <div class="message-item">
-      <div class="user-markdown-body">
-        <slot></slot>
+      <div class="user">
+        <div class="markdown-body">
+          <div v-html="HTMLmessage"></div>
+        </div>
       </div>
     </div>
 
@@ -20,11 +22,21 @@
 
 
 <script setup>
-
+import { marked } from 'marked'
 import GptAvatar from "@/components/chat/GptAvatar.vue";
+import {computed, ref} from "vue";
+// import 'github-markdown-css';
 
-defineProps(["date"])
 
+const props = defineProps({
+  date: String,
+  message: String,
+});
+
+const testMessage = ref('d+f');
+
+const HTMLmessage = computed(() => marked(props.message))
+// console.log(HTMLmessage);
 
 </script>
 
@@ -46,13 +58,17 @@ defineProps(["date"])
   flex-direction: row-reverse;
 }
 
-.user-markdown-body{
+.user{
   padding: 10px;
   border-radius: 5px;
   margin: 10px;
   max-width: 70%;
   color: #171616;
-  background-color: #a3e38e;
+  background-color: #c0efeb;
+}
+
+.markdown-body{
+  background-color: #c0efeb;
 }
 
 .message-action .date{
