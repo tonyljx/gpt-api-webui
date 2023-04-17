@@ -17,10 +17,11 @@
 
 <script setup>
 import GptAvatar from "@/components/chat/GptAvatar.vue";
-import {computed,watchEffect,nextTick,ref} from "vue";
+import {computed, watchEffect, nextTick, ref, onMounted} from "vue";
 import { marked } from 'marked'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github-dark.css'
+import ClipboardJS from "clipboard";
 const props = defineProps({
   date: String,
   message: String,
@@ -28,20 +29,61 @@ const props = defineProps({
 
 const messageRef = ref(props.message);
 
-const HTMLmessage = computed(() => {
-  // console.log("子组件收到信息了: "+messageRef.value)
-  return marked(messageRef.value,{
-    highlight: function(md){
-      return hljs.highlightAuto(md).value;
-    }
-  });
-});
+// const HTMLmessage = computed(() => {
+//   return marked(messageRef.value,{
+//     highlight: function(md){
+//       return hljs.highlightAuto(md).value;
+//     }
+//   });
+// });
 
 watchEffect(() => {
   messageRef.value = props.message;
 });
-// console.log("GPT组件的信息: ",HTMLmessage);
+
+// 代码
+// 挂载的时候加载clipboard
+onMounted(()=>{
+  const clipboard = new ClipboardJS('.copy-btn', {
+    target: function(trigger) {
+      // console.log(trigger.parentNode);
+      // console.log(trigger.parentNode.querySelector('code'));
+      return trigger.parentNode.querySelector('code');
+      // return trigger.parentNode.previousSibling.querySelector('code');
+    }
+  });
+  clipboard.on('success', (e) => {
+    e.trigger.innerHTML = 'Copied!';
+    setTimeout(() => {
+      e.trigger.innerHTML = 'Copy';
+    }, 2000);
+  });
+})
+
+const HTMLmessage = computed(() => {
+  const renderer =  new marked.Renderer();
+  renderer.code = function(code, language) {
+    const highlightedCode = language ? hljs.highlight(language, code).value : hljs.highlightAuto(code).value;
+    const copyButton = '<button class="copy-btn">Copy</button>';
+    // const codeBlock = `  <pre><code class="hljs ${language}"> <div class="copy">${copyButton}</div> ${highlightedCode}</code></pre>`;
+    const codeBlock = `
+             <pre>  ${copyButton} <code class="hljs ${language}"> ${highlightedCode}</code></pre>
+             </div>`;
+    return codeBlock;
+  };
+  marked.setOptions({
+    renderer,
+    highlight: function(code, language) {
+      return language ? hljs.highlight(language, code).value : hljs.highlightAuto(code).value;
+    }
+  })
+  return marked(messageRef.value);
+});
+
+
+
 </script>
+
 
 <style scoped>
 /* 设置消息容器的架构 */
@@ -83,5 +125,17 @@ watchEffect(() => {
   color: #fff;
 }
 
+:deep(.copy-btn) {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background-color: rgb(0,0,0,0.28);
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+:deep(.copied){
+  position: relative;
+}
 
 </style>

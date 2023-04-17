@@ -90,40 +90,6 @@ const options = {
   timeZone: "Asia/Shanghai" // 指定时区为北京时间
 };
 
-
-function submitMessage() {
-  // console.log("submit Messgae: "+newMessage.value);
-  if (newMessage.value.trim() === '') {
-    return;
-  }
-  // 生成用户信息
-  const Message = {
-    "message": newMessage.value,
-    "type": "user",
-    "date": new Date().toLocaleString('zh-CN', options),
-  }
-  messages.value.push(Message);
-
-  // 把消息滑动到最下方
-  scrollToBottom();
-  axios.post('/api/stream',
-      {
-        model: 'gpt-3.5-turbo',
-        messages: [{role: 'user', content: newMessage.value}]
-      }, {
-        headers: {'Content-Type': 'application/json'}
-      }
-  )
-      .then((response) => {
-        console.log("res收到: ", response);
-      })
-      .catch((error) => {
-        console.error('客户端Error occurred while sending POST request:', error);
-      });
-
-  newMessage.value = "";
-}
-
 async function submitMessage_fetch() {
   // console.log("submit Messgae: "+newMessage.value);
   if (newMessage.value.trim() === '') {
@@ -163,25 +129,13 @@ async function submitMessage_fetch() {
       messages: [{role: 'user', content: message}]
     }),
     onmessage(event) {
-      console.log("Receive: "+event.data);
-      // GPTMessage.message +=  JSON.parse(event.data);
       let length = messages.value.length;
       messages.value[length-1].message += JSON.parse(event.data);
-      // console.log("父组件收到的信息: "+GPTMessage.message);
-      // messages.value.pop()
-      // messages.value.push(GPTMessage);
       scrollToBottom();
     }
   });
 
-  // setInterval(()=>{
-  //   console.log("GPTMESSAGE: ",GPTMessage.message);
-  //   GPTMessage.message += "更新消息";
-  // },1000)
-
-
 }
-
 
 // 原生实现
 function scrollToBottom() {

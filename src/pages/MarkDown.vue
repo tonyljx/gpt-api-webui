@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <textarea v-model="markdown"></textarea>
-    <div  id="render-md" v-html="render_html"></div>
+    <div  id="render-md" v-html="HTMLmessage"></div>
   </div>
 <!--  <button @click="info">click me</button>-->
 </template>
@@ -10,7 +10,8 @@
 import {marked} from "marked";
 import {computed, onMounted, ref, watch} from "vue";
 import hljs from 'highlight.js'
-import 'highlight.js/styles/github-dark.css'
+import 'highlight.js/styles/atom-one-light.css'
+import ClipboardJS from "clipboard";
 
 // c1实现
 // marked.setOptions({
@@ -51,6 +52,51 @@ const render_html = computed(() => {
 })
 
 
+// 挂载的时候加载clipboard
+onMounted(()=>{
+  const clipboard = new ClipboardJS('.copy-btn', {
+    target: function(trigger) {
+      console.log(trigger.parentNode);
+      console.log(trigger.parentNode.querySelector('code'));
+      return trigger.parentNode.querySelector('code');
+      // return trigger.parentNode.previousSibling.querySelector('code');
+    },
+    onCopy: function(e){
+      e.trigger.setSelectionRange(0,0);
+    }
+  });
+  clipboard.on('success', (e) => {
+    e.trigger.innerHTML = 'Copied!';
+    setTimeout(() => {
+      e.trigger.innerHTML = 'Copy';
+    }, 2000);
+  });
+})
+
+// console.log(markdown.value);
+
+const HTMLmessage = computed(() => {
+  const renderer =  new marked.Renderer();
+  renderer.code = function(code, language) {
+    const highlightedCode = language ? hljs.highlight(language, code).value : hljs.highlightAuto(code).value;
+    const copyButton = '<button class="copy-btn">Copy</button>';
+    // const codeBlock = `  <pre><code class="hljs ${language}"> <div class="copy">${copyButton}</div> ${highlightedCode}</code></pre>`;
+    const codeBlock = `
+             <pre>  ${copyButton} <code class="hljs ${language}"> ${highlightedCode}</code></pre>
+             </div>`;
+    return codeBlock;
+  };
+  marked.setOptions({
+    renderer,
+    highlight: function(code, language) {
+      return language ? hljs.highlight(language, code).value : hljs.highlightAuto(code).value;
+    }
+  })
+  return marked(markdown.value);
+});
+
+
+
 
 function info(){
   console.log("button...");
@@ -85,23 +131,28 @@ code {
 }
 
 :deep(pre) {
-  background-color: #2c3e50;
+  //background-color: #2c3e50;
   margin: 1em 0;
   padding: 1em;
   border: 1px solid rgb(0,0,0,0.25);
   border-radius: 10px;
   color: #fff;
+  position: relative;
 }
 
-.copy-btn {
-  //position: absolute;
-  top: 5px;
-  right: 5px;
-  background-color: #ccc;
+:deep(.copy-btn) {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background-color: rgb(0,0,0,0.28);
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
 }
+:deep(.copied){
+  position: relative;
+}
+
 .copied {
   display: none;
   position: absolute;
