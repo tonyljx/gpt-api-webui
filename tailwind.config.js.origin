@@ -1,15 +1,11 @@
 /** @type {import('tailwindcss').Config} */
-
-// const defaultTheme = require('tailwindcss/defaultTheme')
-const plugin = require('tailwindcss/plugin')
-const Color = require('color')
-
+// const defaultTheme = require("tailwindcss/defaultTheme");
 module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx,vue}"
   ],
-  darkMode: 'class',
+  // darkMode: 'class',
   theme: {
     themeVariants: ['dark'],
     colors: {
@@ -195,8 +191,8 @@ module.exports = {
     boxShadow: ['focus', 'dark:focus'],
   },
   plugins: [
-    require('@tailwindcss/forms'),
   ],
 }
+
 
 
