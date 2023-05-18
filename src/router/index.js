@@ -1,11 +1,14 @@
 import { createRouter,createWebHashHistory  } from 'vue-router'
-import Home from '../pages/Home.vue' 
-import About from '../pages/About.vue'
-import Beishan from "@/pages/Beishan.vue";
+import Home from '../pages/common/Home.vue'
+import About from '../pages/other/About.vue'
+import Beishan from "@/pages/other/Beishan.vue";
 import Chat from "@/pages/ChatGPT/Chat.vue";
 import ChatGpt from "@/pages/ChatGPT/ChatGpt.vue";
 import NewChat from "@/pages/ChatGPT/NewChat.vue";
-import MarkDownPage from "@/pages/MarkDown.vue";
+import MarkDownPage from "@/pages/common/MarkDown.vue";
+import Login from "@/pages/common/Login.vue";
+import Upload from "@/pages/common/Upload.vue";
+import ChatWithPDF from "@/pages/ChatGPT/ChatWithPDF.vue";
 const routes = [
     {
         path: '/',
@@ -41,6 +44,21 @@ const routes = [
         path: '/md',
         name: 'md',
         component: MarkDownPage,
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: Login,
+    },
+    {
+        path: '/file',
+        name: 'file',
+        component: Upload,
+    },
+    {
+        path: '/chatpdf',
+        name: 'chatpdf',
+        component: ChatWithPDF
     }
 ]
 

@@ -1,24 +1,16 @@
 <template>
   <div class="main">
-    <textarea v-model="markdown"></textarea>
-    <div  id="render-md" v-html="HTMLmessage"></div>
+    <textarea class="p-4 mr-6  rounded border" v-model="markdown"></textarea>
+    <div id="render-md" v-html="HTMLmessage"></div>
   </div>
-<!--  <button @click="info">click me</button>-->
 </template>
 
 <script setup>
 import {marked} from "marked";
 import {computed, onMounted, ref, watch} from "vue";
 import hljs from 'highlight.js'
-import 'highlight.js/styles/atom-one-light.css'
+import 'highlight.js/styles/googlecode.css'
 import ClipboardJS from "clipboard";
-
-// c1实现
-// marked.setOptions({
-//   highlight: function(code){
-//     return hljs.highlightAuto(code).value
-//   }
-// })
 
 const markdown = ref(
     "# Hello, world!\n" +
@@ -36,15 +28,15 @@ const markdown = ref(
     "            else:\n" +
     "                right.append(arr[i])\n" +
     "        return quick_sort(left) + [pivot] + quick_sort(right)\n" +
-    "```\n"+
+    "```\n" +
     "**12+34=46**");
 
 
 // 使用 marked 和 highlight.js 进行文本渲染和代码高亮
 const render_html = computed(() => {
 
-  return marked(markdown.value,{
-    highlight: function(md){
+  return marked(markdown.value, {
+    highlight: function (md) {
       return hljs.highlightAuto(md).value;
     }
   });
@@ -53,16 +45,16 @@ const render_html = computed(() => {
 
 
 // 挂载的时候加载clipboard
-onMounted(()=>{
+onMounted(() => {
   const clipboard = new ClipboardJS('.copy-btn', {
-    target: function(trigger) {
-      console.log(trigger.parentNode);
-      console.log(trigger.parentNode.querySelector('code'));
+    // text: function (trigger) {
+    //   return trigger.parentNode.querySelector('code');
+    // },
+    target: function (trigger) {
       return trigger.parentNode.querySelector('code');
-      // return trigger.parentNode.previousSibling.querySelector('code');
     },
-    onCopy: function(e){
-      e.trigger.setSelectionRange(0,0);
+    onCopy: function (e) {
+      e.trigger.setSelectionRange(0, 0);
     }
   });
   clipboard.on('success', (e) => {
@@ -70,16 +62,17 @@ onMounted(()=>{
     setTimeout(() => {
       e.trigger.innerHTML = 'Copy';
     }, 2000);
+    e.clearSelection();
   });
 })
 
 // console.log(markdown.value);
 
 const HTMLmessage = computed(() => {
-  const renderer =  new marked.Renderer();
-  renderer.code = function(code, language) {
+  const renderer = new marked.Renderer();
+  renderer.code = function (code, language) {
     const highlightedCode = language ? hljs.highlight(language, code).value : hljs.highlightAuto(code).value;
-    const copyButton = '<button class="copy-btn">Copy</button>';
+    const copyButton = '<button class="copy-btn bg-teal-300 hover:bg-purple-300">Copy</button>';
     // const codeBlock = `  <pre><code class="hljs ${language}"> <div class="copy">${copyButton}</div> ${highlightedCode}</code></pre>`;
     const codeBlock = `
              <pre>  ${copyButton} <code class="hljs ${language}"> ${highlightedCode}</code></pre>
@@ -88,7 +81,7 @@ const HTMLmessage = computed(() => {
   };
   marked.setOptions({
     renderer,
-    highlight: function(code, language) {
+    highlight: function (code, language) {
       return language ? hljs.highlight(language, code).value : hljs.highlightAuto(code).value;
     }
   })
@@ -96,33 +89,25 @@ const HTMLmessage = computed(() => {
 });
 
 
-
-
-function info(){
+function info() {
   console.log("button...");
 }
-
 
 </script>
 
 
 <style scoped>
 
-.main{
+.main {
   display: flex;
   width: 100vw;
   height: 100vh;
 }
+
 .main > * {
   flex: 1;
   resize: none;
 }
-textarea{
-  padding: 1em;
-  margin-right: 1em;
-  border: 2px solid rgb(0,0,0,0.25);
-}
-
 
 code {
   position: relative;
@@ -131,10 +116,8 @@ code {
 }
 
 :deep(pre) {
-  //background-color: #2c3e50;
-  margin: 1em 0;
   padding: 1em;
-  border: 1px solid rgb(0,0,0,0.25);
+  border: 1px solid rgb(0, 0, 0, 0.25);
   border-radius: 10px;
   color: #fff;
   position: relative;
@@ -144,13 +127,9 @@ code {
   position: absolute;
   top: 1px;
   right: 1px;
-  background-color: rgb(0,0,0,0.28);
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
-}
-:deep(.copied){
-  position: relative;
 }
 
 .copied {
@@ -163,7 +142,7 @@ code {
   padding: 5px 10px;
 }
 
-#render-md{
+#render-md {
   overflow: auto;
 }
 

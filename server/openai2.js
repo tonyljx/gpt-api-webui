@@ -2,11 +2,27 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const bodyParser = require('body-parser')
+const mysql = require('mysql2');
 
+// 创建数据库表的配置
+const dbConfig = {
+    host: 'localhost',
+    user: 'gpt',
+    password: 'woyaozhuanqian123!',
+    database: 'gpt',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+}
+
+const pool = mysql.createPool(dbConfig);
+console.log("database pool: "+pool);
+
+
+// 基本配置
 const port = 3000;
 const openaiUrl = 'https://api.openai.com/v1/chat/completions';
 const apiKey = process.env.OPENAI_API_KEY;
-// console.log(apiKey)
 let clients = [];
 
 const params = {
@@ -25,14 +41,33 @@ app.use(cors({
     origin: 'http://localhost:5173'
 }));
 
+app.post('/api/login',async (req, res)=>{
+    const { username, password } = req.body;
+    console.log(`Received login request for username ${username} and password ${password}`);
+
+    pool.query('SELECT * FROM account WHERE name = ? AND password = ?',[username,password],
+        function (err,results){
+            if(results.length === 0){
+                res.status(401).json({ message: 'Incorrect username or password' })
+                return;
+            }
+            console.log(results);
+            res.status(200).json({ message: 'success' })
+        })
+})
+
+// 通用中间件
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     next();
 });
 
+
 app.post('/api/sse', (req,res) => {
     // 通过引入bodypareser 这样我们可以解析body
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('Content-Type', 'text/event-stream')
     res.write('data: get?\n\n');
     setInterval(()=>{
@@ -43,7 +78,7 @@ app.post('/api/sse', (req,res) => {
 app.post('/api/stream',doResponse);
 
 function doResponse(req, res) {
-    // 流式
+
     res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
@@ -120,7 +155,7 @@ function doResponse(req, res) {
             } else {
                 // Something happened in setting up the request that triggered an Error
                 console.log('Error', error.message);
-                res.status(500).send(error.message);
+                // res.status(500).send(error.message);
             }
             console.log(error.config);
         });

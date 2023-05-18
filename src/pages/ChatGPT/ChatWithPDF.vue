@@ -3,25 +3,10 @@
   <div class="system bg-gradient-to-r from-green-100 to-teal-100">
       <!--    <TheUpload></TheUpload>-->
       <button
-          class="bg-red-200 hover:bg-red-300 rounded-md  w-10/12 h-12 text-lg font-bold mt-5 self-center">
-        新建对话
+          class="  px-2 py-3 bg-red-200 hover:bg-red-300 rounded-md  w-10/12   text-lg font-bold mt-5 self-center">
+        {{store.fileName}}
       </button>
-      <hr class=" mt-3 border-t border-dotted border-red-500 ">
-
-      <ul class="text-center font-bold mt-2 ">
-        <li class="mt-2 rounded-md border-2 border-gray-400 px-3 py-2 text-gray-700
-         hover:text-gray-400 hover:border-green-400 ">
-          聊天记录1
-        </li>
-        <li class="mt-2 rounded-md border-2 border-gray-400 px-3 py-2 text-gray-700
-        hover:text-gray-400 hover:border-green-400">
-          聊天记录2
-        </li>
-        <li class="mt-2 rounded-md border-2 border-gray-400 px-3 py-2 text-gray-700
-        hover:text-gray-400 hover:border-green-400">
-          聊天记录3
-        </li>
-      </ul>
+      <hr class=" mt-3 border-t border-black border-dotted border-red-500 ">
 
   </div>
 
@@ -68,19 +53,13 @@ import {onMounted, ref} from "vue";
 import {nextTick} from "vue";
 import {Position} from '@element-plus/icons-vue'
 import {fetchEventSource} from '@microsoft/fetch-event-source';
-import useUserStore from '@/store/user'
-import {ElMessage} from "element-plus";
+import axios from 'axios';
+import {store} from "@/store";
 import router from "@/router";
-import { ElNotification } from 'element-plus'
-
+import {ElMessage, ElNotification} from "element-plus";
+import useUserStore from '@/store/user'
 // 全局状态
 const userStore = useUserStore();
-const sendMessageCnt=ref(0);
-const disabledInput = ref(false);
-
-const date = "2023年04月09日15:38:07";
-
-
 onMounted(
     ()=> {
       if (!userStore.userLoggedIn) {
@@ -98,15 +77,12 @@ onMounted(
     }
 )
 
+const sendMessageCnt=ref(0);
+const disabledInput = ref(false);
+const date = "2023年04月09日15:38:07";
 const messages = ref([
   {
-    "message": "请问你是谁?"
-    ,
-    "type": "user",
-    "date": "2023年04月09日15:51:40",
-  },
-  {
-    "message": "我是GPT,一个人工智能模型,请问有什么可以帮助你的?",
+    "message": "我是PDF问答助手,请问有什么疑问?",
     "type": "chatgpt",
     "date": "2023年04月09日15:52:37",
   }
@@ -127,16 +103,6 @@ const options = {
 
 async function submitMessage_fetch() {
   // console.log("submit Messgae: "+newMessage.value);
-  console.log(userStore.userLoggedIn)
-  if (userStore.userLoggedIn === false){
-    ElMessage({
-      message: '尚未登录, 即将跳转',
-      type: 'success',
-    })
-    router.push('/login');
-    return;
-  }
-
   if (newMessage.value.trim() === '') {
     return;
   }
@@ -164,23 +130,42 @@ async function submitMessage_fetch() {
 
   messages.value.push(GPTMessage);
 
-  await fetchEventSource('/api/stream', {
+  // 非流式输出
+  const response = await fetch('/api/pdf/ask',{
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages: [{role: 'user', content: message}]
+      filename: store.fileName,
+      query: message,
     }),
-    onmessage(event) {
-      let length = messages.value.length;
-      // console.log(event)
-      // console.log("收到数据: "+event.data)
-      messages.value[length-1].message += JSON.parse(event.data);
-      scrollToBottom();
-    }
-  });
+  })
+
+  if (response.ok){
+    const result = await response.json()
+    let length = messages.value.length;
+    messages.value[length-1].message += result.data;
+    scrollToBottom();
+  }
+
+  // await fetchEventSource('/api/pdf/ask', {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({
+  //     filename: store.fileName,
+  //     query: message,
+  //   }),
+  //   onmessage(event) {
+  //     let length = messages.value.length;
+  //     console.log(event)
+  //     console.log("收到数据: "+event.data)
+  //     messages.value[length-1].message += JSON.parse(event.data);
+  //     scrollToBottom();
+  //   }
+  // });
 
 }
 
