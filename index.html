@@ -1,36 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyGPTApp</title>
-      <style>
-          html,
-          body,
-          main{
-              display: flex;
-              flex-grow: 1;
-              flex-shrink: 1;
-              flex-basis: auto;
-              align-items: stretch;
-              justify-content: center;
-              font-size: 13px;
-              height: 100vh;
-              width: 100vw;
-          }
-      </style>
 
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyGPTApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <body>
-    <main>
-        <div id="app"></div>
-    </main>
+  <style>
+    html,
+    main {
+      display: flex;
+      flex-grow: 1;
+      flex-shrink: 1;
+      flex-basis: auto;
+      align-items: stretch;
+      justify-content: center;
+      font-size: 80%;
+      height: 100vh;
+      width: 100vw;
+      background-color: #f4f4f5;
+    }
+
+    body {
+      font-family: "Rubik", sans-serif;
+      line-height: 1;
+      font-weight: 400;
+      color: #555;
+    }
+  </style>
+
+</head>
+
+<body>
+  <main>
+    <div id="app"></div>
+  </main>
 
 
-    <script type="module" src="/src/main.js"></script>
-  </body>
+  <script type="module" src="/src/main.js"></script>
+</body>
 
 
 </html>

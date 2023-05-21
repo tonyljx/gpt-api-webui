@@ -179,7 +179,7 @@ module.exports = {
       'dark:active',
       'dark:odd',
     ],
-    display: ['responsive', 'dark'],
+    display: ['responsive'],
     textColor: [
       'focus-within',
       'hover',
@@ -189,10 +189,10 @@ module.exports = {
       'dark:hover',
       'dark:active',
     ],
-    placeholderColor: ['focus', 'dark', 'dark:focus'],
-    borderColor: ['focus', 'hover', 'dark', 'dark:focus', 'dark:hover'],
-    divideColor: ['dark'],
-    boxShadow: ['focus', 'dark:focus'],
+    // placeholderColor: ['focus', 'dark', 'dark:focus'],
+    // borderColor: ['focus', 'hover', 'dark', 'dark:focus', 'dark:hover'],
+    // divideColor: ['dark'],
+    // boxShadow: ['focus', 'dark:focus'],
   },
   plugins: [
     require('@tailwindcss/forms'),

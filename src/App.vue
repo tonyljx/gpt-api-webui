@@ -7,43 +7,60 @@ import ChatGpt from "@/pages/ChatGPT/ChatGpt.vue";
  
 
 <template>
-  <div id="router" class="p-2 w-full bg-gray-800 text-white">
-    <router-link class="pr-5" to="/">首页  </router-link>
-    <router-link class="pr-5" to="/file">上传文件</router-link>
-    <router-link class="pr-5" to="/newchat">对话</router-link>
-    <router-link to="/chatpdf">PDF对话</router-link>
-    <router-link class="ml-auto pr-5" to="/md">Markdown格式预览</router-link>
-    <router-link class="pr-5" to="/login">登录</router-link>
-  </div>
-  
+  <header class="flex items-center justify-between px-10 h-20">
+    <img src="../static/logo2.jpg" class="logo" />
+    <nav class="flex items-center gap-12 ">
+      <router-link class="text-lg font-bold hover:text-teal-500" to="/">首页 </router-link>
+      <router-link class="text-lg font-bold hover:text-teal-500" to="/file">上传文件</router-link>
+      <router-link class="text-lg font-bold hover:text-teal-500" to="/newchat">对话</router-link>
+      <router-link class="text-lg font-bold hover:text-teal-500" to="/chatpdf">PDF对话</router-link>
+      <router-link class="text-lg font-bold hover:text-teal-500" to="/md">Markdown格式预览</router-link>
+      <router-link class="text-lg font-bold hover:text-teal-500 cta" to="/login">登录</router-link>
+    </nav>
+  </header>
+
   <main>
     <router-view></router-view>
   </main>
-
 </template>
  
 
 <style scoped>
+* {
+  font-size: 10px;
+}
+
 header {
   line-height: 1.5;
 }
 
-
 /*我写的css*/
-#router{
+#router {
   display: flex;
   justify-content: space-around;
   font-size: large;
 }
 
-main{
+.logo {
+  height: 4rem;
+}
+
+.cta:link,
+.cta:visited {
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  color: white;
+  background-color: #14b8a6;
+}
+
+.cta:hover,
+.cta:active {
+
+  background-color: #0d9488;
+}
+
+
+main {
   height: 100%;
 }
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
 </style>
