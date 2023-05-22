@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full flex flex-col items-center">
+  <div class="w-screen h-screen flex flex-col items-center">
 
     <h2 class="mt-3 text-2xl font-bold">Chat With Any PDF</h2>
 

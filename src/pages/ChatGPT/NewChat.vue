@@ -1,9 +1,10 @@
 <template>
+  <div class=" w-screen flex">
 
-  <div class="system bg-gradient-to-r from-green-100 to-teal-100">
+
+    <div class="system bg-gradient-to-r from-green-100 to-teal-100">
       <!--    <TheUpload></TheUpload>-->
-      <button
-          class="bg-red-200 hover:bg-red-300 rounded-md  w-10/12 h-12 text-lg font-bold mt-5 self-center">
+      <button class="bg-red-200 hover:bg-red-300 rounded-md  w-10/12 h-12 text-lg font-bold mt-5 self-center">
         新建对话
       </button>
       <hr class=" mt-3 border-t border-dotted border-red-500 ">
@@ -23,80 +24,71 @@
         </li>
       </ul>
 
-  </div>
+    </div>
 
 
-  <div class="chat-box-container">
+    <div class="chat-box-container">
 
-    <div class="chat-box-content-container">
-      <div v-for="(message,index) in messages" :key="index">
-        <UserMessage
-            :date="message.date"
-            v-if="message.type==='user'"
-            :message="message.message"
-        >
-        </UserMessage>
+      <div class="chat-box-content-container">
+        <div v-for="(message, index) in messages" :key="index">
+          <UserMessage :date="message.date" v-if="message.type === 'user'" :message="message.message">
+          </UserMessage>
 
-        <GptMessage :date="message.date" :message="message.message" v-else>
+          <GptMessage :date="message.date" :message="message.message" v-else>
 
-        </GptMessage>
+          </GptMessage>
+        </div>
       </div>
-    </div>
 
-    <div class="chat-box-footer">
-      <el-input
-          type="textarea"
-          placeholder="input here... press Enter to send Message"
-          v-model="newMessage"
-          @keydown.enter.prevent
-          @keyup.enter="submitMessage_fetch"
-          @keyup.enter.shift="handleShiftEnter"
-          :suffix-icon="Position"
-      >
-      </el-input>
+      <div class="chat-box-footer">
+        <el-input type="textarea" placeholder="input here... press Enter to send Message" v-model="newMessage"
+          @keydown.enter.prevent @keyup.enter="submitMessage_fetch" @keyup.enter.shift="handleShiftEnter"
+          :suffix-icon="Position">
+        </el-input>
+      </div>
+
     </div>
 
   </div>
-
 </template>
 
 
 <script setup>
 import UserMessage from "@/components/chat/UserMessage.vue";
 import GptMessage from "@/components/chat/GptMessage.vue";
-import {onMounted, ref} from "vue";
-import {nextTick} from "vue";
-import {Position} from '@element-plus/icons-vue'
-import {fetchEventSource} from '@microsoft/fetch-event-source';
+import { onMounted, ref } from "vue";
+import { nextTick } from "vue";
+import { Position } from '@element-plus/icons-vue'
+import { fetchEventSource } from '@microsoft/fetch-event-source';
 import useUserStore from '@/store/user'
-import {ElMessage} from "element-plus";
+import { ElMessage } from "element-plus";
 import router from "@/router";
 import { ElNotification } from 'element-plus'
 
 // 全局状态
 const userStore = useUserStore();
-const sendMessageCnt=ref(0);
+const sendMessageCnt = ref(0);
 const disabledInput = ref(false);
 
 const date = "2023年04月09日15:38:07";
 
 
-onMounted(
-    ()=> {
-      if (!userStore.userLoggedIn) {
-        ElNotification({
-          title: 'Info',
-          message: '尚未登录,准备转向登录页面',
-          type: 'info',
-        })
-        setTimeout(
-            ()=>{
-              router.push('/login');
-            },2000
-        )
-      }
-    }
-)
+// onMounted(
+//   () => {
+//     if (!userStore.userLoggedIn) {
+//       ElNotification({
+//         title: 'Info',
+//         message: '尚未登录,准备转向登录页面',
+//         type: 'info',
+//       })
+//       setTimeout(
+//         () => {
+//           router.push('/login');
+//         }, 2000
+//       )
+//     }
+//   }
+// )
 
 const messages = ref([
   {
@@ -128,7 +120,7 @@ const options = {
 async function submitMessage_fetch() {
   // console.log("submit Messgae: "+newMessage.value);
   console.log(userStore.userLoggedIn)
-  if (userStore.userLoggedIn === false){
+  if (userStore.userLoggedIn === false) {
     ElMessage({
       message: '尚未登录, 即将跳转',
       type: 'success',
@@ -171,13 +163,13 @@ async function submitMessage_fetch() {
     },
     body: JSON.stringify({
       model: 'gpt-3.5-turbo',
-      messages: [{role: 'user', content: message}]
+      messages: [{ role: 'user', content: message }]
     }),
     onmessage(event) {
       let length = messages.value.length;
       // console.log(event)
       // console.log("收到数据: "+event.data)
-      messages.value[length-1].message += JSON.parse(event.data);
+      messages.value[length - 1].message += JSON.parse(event.data);
       scrollToBottom();
     }
   });
@@ -187,10 +179,10 @@ async function submitMessage_fetch() {
 // 原生实现
 function scrollToBottom() {
   nextTick(
-      () => {
-        const messageContainer = document.querySelector('.chat-box-content-container');
-        messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
-      }
+    () => {
+      const messageContainer = document.querySelector('.chat-box-content-container');
+      messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
+    }
   );
 }
 
