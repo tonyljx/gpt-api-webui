@@ -16,18 +16,18 @@
     <div class="hero">
       <div class="hero-text-box">
         <h1 class="heading-primary">
-          Your Personal Assistant based on your docs with Artificial Intelligence
+          基于人工智能的AI文档助理
         </h1>
         <p class="hero-description">
           利用AI驱动的文档交互，我们为初创公司提供创新解决方案。通过结合人工智能技术和高效的文档处理，我们的产品实现自动化、智能化的文档管理和交流，助力您的业务高效运转
         </p>
         <a href="#" class="btn btn--full mr-5 ">Start Communicating</a>
-        <a href="#" class="btn btn--outline "> Learn More</a>
+        <a href="#" class="btn btn--outline mb-5"> Learn More</a>
 
         <div class="mt-3">
-          <h2 class="text-2xl font-bold">支持的文件类型</h2>
-          <div class="flex flex-col  justify-between gap-2">
-            <div class="text-xl font-semibold flex gap-2">
+          <h2 class="text-2xl font-bold mb-6">支持的文件类型</h2>
+          <div class="flex   justify-between gap-2">
+            <div class="text-xl font-semibold flex  gap-2">
               PDF
               <img class=" w-8" src="../../assets/pdf.svg" />
             </div>
