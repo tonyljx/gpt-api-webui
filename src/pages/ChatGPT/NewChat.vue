@@ -2,12 +2,11 @@
   <div class=" w-screen flex">
 
 
-    <div class="system bg-gradient-to-r from-green-100 to-teal-100">
+    <div class="system  ">
       <!--    <TheUpload></TheUpload>-->
       <button class="bg-red-200 hover:bg-red-300 rounded-md  w-10/12 h-12 text-lg font-bold mt-5 self-center">
         新建对话
       </button>
-      <hr class=" mt-3 border-t border-dotted border-red-500 ">
 
       <ul class="text-center font-bold mt-2 ">
         <li class="mt-2 rounded-md border-2 border-gray-400 px-3 py-2 text-gray-700
@@ -165,15 +164,27 @@ async function submitMessage_fetch() {
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: message }]
     }),
+    async onopen(response) {
+      if (response.ok && response.headers.get('content-type') === 'text/event-stream') {
+        // everything's good
+        console.log('everything\'s good')
+      } else if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+        console.log('请求错误')
+        throw new Error(response.status)
+      } else {
+        console.log('其他错误')
+      }
+    },
     onmessage(event) {
       let length = messages.value.length;
-      // console.log(event)
-      // console.log("收到数据: "+event.data)
+      console.log("收到数据: " + event.data)
       messages.value[length - 1].message += JSON.parse(event.data);
       scrollToBottom();
+    },
+    onerror(err) {
+      throw err;
     }
   });
-
 }
 
 // 原生实现
@@ -200,8 +211,9 @@ function handleShiftEnter() {
   display: flex;
   flex-direction: column;
   height: 90vh;
-  margin-right: 1em;
-  border-radius: 4px;
+  padding: 1rem;
+  margin-right: 1rem;
+  border: 2px solid #9ca3af;
 }
 
 .prompt {

@@ -1,15 +1,10 @@
 <template>
-  <div class=" w-screen flex">
+  <div class="container ">
 
-    <div class="system bg-gradient-to-r from-green-100 to-teal-100">
-      <!--    <TheUpload></TheUpload>-->
-      <button class="  px-2 py-3 bg-red-200 hover:bg-red-300 rounded-md  w-10/12   text-lg font-bold mt-5 self-center">
-        {{ store.fileName }}
-      </button>
-      <hr class=" mt-3 border-t border-black border-dotted border-red-500 ">
-
+    <div class="file-previewer">
+      <!-- <iframe id="myPdf" src="./meituan_course.pdf"></iframe> -->
+      <embed id="myPdf" src="./meituan_course.pdf#page=2" type="application/pdf" width="100%">
     </div>
-
 
     <div class="chat-box-container">
 
@@ -25,10 +20,10 @@
       </div>
 
       <div class="chat-box-footer">
-        <el-input type="textarea" placeholder="input here... press Enter to send Message" v-model="newMessage"
-          @keydown.enter.prevent @keyup.enter="submitMessage_fetch" @keyup.enter.shift="handleShiftEnter"
-          :suffix-icon="Position">
+        <el-input placeholder="input here... press Enter to send Message" v-model="newMessage" @keydown.enter.prevent
+          @keyup.enter="submitMessage_fetch" @keyup.enter.shift="handleShiftEnter" :suffix-icon="Promotion">
         </el-input>
+
       </div>
 
     </div>
@@ -49,24 +44,25 @@ import { store } from "@/store";
 import router from "@/router";
 import { ElMessage, ElNotification } from "element-plus";
 import useUserStore from '@/store/user'
+import { Promotion } from '@element-plus/icons-vue'
 // 全局状态
 const userStore = useUserStore();
-onMounted(
-  () => {
-    if (!userStore.userLoggedIn) {
-      ElNotification({
-        title: 'Info',
-        message: '尚未登录,准备转向登录页面',
-        type: 'info',
-      })
-      setTimeout(
-        () => {
-          router.push('/login');
-        }, 2000
-      )
-    }
-  }
-)
+// onMounted(
+//   () => {
+//     if (!userStore.userLoggedIn) {
+//       ElNotification({
+//         title: 'Info',
+//         message: '尚未登录,准备转向登录页面',
+//         type: 'info',
+//       })
+//       setTimeout(
+//         () => {
+//           router.push('/login');
+//         }, 2000
+//       )
+//     }
+//   }
+// )
 
 const sendMessageCnt = ref(0);
 const disabledInput = ref(false);
@@ -121,8 +117,8 @@ async function submitMessage_fetch() {
 
   messages.value.push(GPTMessage);
 
-  // 非流式输出
-  const response = await fetch('/api/pdf/ask', {
+
+  await fetchEventSource('/api/pdf/ask', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -131,32 +127,28 @@ async function submitMessage_fetch() {
       filename: store.fileName,
       query: message,
     }),
-  })
-
-  if (response.ok) {
-    const result = await response.json()
-    let length = messages.value.length;
-    messages.value[length - 1].message += result.data;
-    scrollToBottom();
-  }
-
-  // await fetchEventSource('/api/pdf/ask', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify({
-  //     filename: store.fileName,
-  //     query: message,
-  //   }),
-  //   onmessage(event) {
-  //     let length = messages.value.length;
-  //     console.log(event)
-  //     console.log("收到数据: "+event.data)
-  //     messages.value[length-1].message += JSON.parse(event.data);
-  //     scrollToBottom();
-  //   }
-  // });
+    async onopen(response) {
+      if (response.ok && response.headers.get('content-type') === 'text/event-stream') {
+        // everything's good
+        // console.log('everything\'s good')
+      } else if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+        console.log('请求错误')
+        throw new Error(response.status)
+      } else {
+        console.log('其他错误')
+      }
+    },
+    onmessage(event) {
+      let length = messages.value.length;
+      console.log(event)
+      console.log("收到数据: " + event.data)
+      messages.value[length - 1].message += JSON.parse(event.data);
+      scrollToBottom();
+    },
+    onerror(err) {
+      throw err;
+    }
+  });
 
 }
 
@@ -178,31 +170,20 @@ function handleShiftEnter() {
 
 
 <style scoped>
-.system {
-  flex-grow: 1;
-  flex-basis: 0;
-  display: flex;
-  flex-direction: column;
-  height: 90vh;
-  margin-right: 1em;
-  border-radius: 4px;
+.container {
+  max-width: 85rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
 }
 
-.prompt {
-  width: 90%;
-  /* height: 300px; */
-}
 
-.chat-box-container {
-  /* 两列的设置 */
-  flex-grow: 3;
-  /* border: 1px solid rgba(0,0,0,0.26); */
-  padding: 1em;
-  margin-right: 1em;
-  display: flex;
-  flex-direction: column;
+#myPdf {
+  width: 100%;
   height: 90vh;
 }
+
+.chat-box-container {}
 
 .chat-box-content-container {
   flex: 1;
@@ -215,20 +196,9 @@ function handleShiftEnter() {
 
 /* config */
 
-.chat-box-footer {
-  display: flex;
-  gap: 10px;
-}
 
-.chat-box-footer input {
-  flex: 1;
-}
 
 textarea {
   border: 1px solid rgba(0, 0, 0, 0.26);
-}
-
-.config {
-  flex-grow: 1;
 }
 </style>

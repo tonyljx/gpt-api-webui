@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 // const defaultTheme = require('tailwindcss/defaultTheme')
-const plugin = require('tailwindcss/plugin')
+// const plugin = require('tailwindcss/plugin')
 const Color = require('color')
 
 module.exports = {
@@ -11,7 +11,6 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
-    themeVariants: ['dark'],
     colors: {
       transparent: 'transparent',
       white: '#ffffff',
@@ -195,7 +194,7 @@ module.exports = {
     // boxShadow: ['focus', 'dark:focus'],
   },
   plugins: [
-    require('@tailwindcss/forms'),
+    // require('@tailwindcss/forms'),
   ],
 }
 

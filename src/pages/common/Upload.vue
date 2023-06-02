@@ -5,7 +5,8 @@
 
     <!--    <input class="" type="file" @change="handleFileChange" ref="fileInput">-->
     <label class="mt-6 w-8/12 flex flex-col items-center px-6 py-6 bg-white rounded-md shadow-md tracking-wide uppercase border border-blue cursor-pointer
-               hover:outline-red hover:shadow-indigo-300 hover:outline-blue " v-loading="loading">
+               hover:outline-red hover:shadow-indigo-300 hover:outline-blue " v-loading="loading" @dragover.prevent
+      @drop="handleFileChange">
       <svg class="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
         <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
         <path fill-rule="evenodd"
@@ -14,8 +15,9 @@
       </svg>
       <span class="mt-2 text-base leading-normal" v-if="fileName">{{ fileName }}</span>
       <span class="mt-2 text-base leading-normal font-semibold" v-else>选择一个文件上传</span>
+
       <input type='file' accept=".pdf,.csv,.xls,.xlsx,.ppt,.pptx,.doc,.docx" class="hidden" @change="handleFileChange"
-        ref="fileInput" />
+        ref="fileInput" @dragover.prevent @drop="handleFileChange" />
     </label>
 
     <button class="mt-6 mb-6 bg-teal-300
@@ -75,6 +77,12 @@ const handleFileChange = () => {
   // do something with the file
   console.log(file)
   fileName.value = file ? file.name : ''
+
+  // URL 存储
+  // 使用URL来处理
+  const URL = window.URL || window.webkitURL;
+  const pdfUrl = URL.createObjectURL(file);
+  console.log(pdfUrl)
 }
 
 const handleUploadClick = async () => {
