@@ -45,7 +45,7 @@ const handlerCommand = async function (command) {
 
 <template>
   <header class="flex items-center justify-between px-10 h-20 ">
-    <img src="../static/logos/logo3.png" class="logo" />
+    <img src="../static/logos/logo4.png" class="logo" />
     <nav class="flex items-center gap-12 navigation">
       <router-link :class="{ 'link-active': currentNav === '/' }" class="router text-lg font-bold hover:text-teal-500"
         to="/">首页
@@ -99,7 +99,7 @@ const handlerCommand = async function (command) {
 
       <div class="logo-col">
         <a href="#" class=" block mb-3">
-          <img src="../static/logos/logo2.png" class="logo" />
+          <img src="../static/logos/logo4.png" class="logo" />
         </a>
         <p class=" text-base text-cool-gray-500">copyright &copy; 2023 by 新音科技有限公司</p>
       </div>
