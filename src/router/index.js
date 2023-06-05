@@ -10,6 +10,7 @@ import Login from "@/pages/common/Login.vue";
 import Upload from "@/pages/common/Upload.vue";
 import ChatWithPDF from "@/pages/ChatGPT/ChatWithPDF.vue";
 import PDFReader from "@/pages/ChatGPT/PDFReader.vue";
+import Admin from "@/pages/common/Admin.vue";
 const routes = [
     {
         path: '/',
@@ -61,6 +62,11 @@ const routes = [
         name: 'chatpdf',
         component: ChatWithPDF
     },
+    {
+        path: '/admin',
+        name: "admin",
+        component: Admin
+    }
     // {
     //     path: '/pdfreader',
     //     name: 'pdfreader',

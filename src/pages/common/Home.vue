@@ -117,6 +117,62 @@
     </div>
 
   </section>
+
+  <section class="section-feature">
+    <div class="container grid grid-cols-3 gap-8  ">
+      <h2 class=" font-bold text-3xl   col-span-3  text-center "> 产品特点 </h2>
+
+      <div class="feature flex flex-col items-center gap-3">
+        <el-icon color="#a5d8ff" size="3rem">
+          <MostlyCloudy />
+        </el-icon>
+        <h3 class="  font-medium text-xl  ">公私混部署</h3>
+        <p class=" font-medium  text-lg text-gray-400 leading-8">私有部署模型针对隐私数据,保障安全性; 公有模型针对数据不敏感的问题提供补充。</p>
+      </div>
+
+      <div class="feature flex flex-col items-center gap-3">
+        <el-icon color="#4dabf7" size="3rem">
+          <Document />
+        </el-icon>
+        <h3 class="  font-medium text-xl  ">多文档类型支持</h3>
+        <p class=" font-medium  text-lg text-gray-400 leading-8 ">系统支持PDF,WORD,TXT等主要文本格式, 后续支持EXCEL等公司常用文件
+          格式的支持
+        </p>
+      </div>
+
+      <div class="feature flex flex-col items-center gap-3">
+        <el-icon color="#91a7ff" size="3rem">
+          <DataAnalysis />
+        </el-icon>
+
+        <h3 class="  font-medium text-xl  ">AI智能</h3>
+        <p class=" font-medium  text-lg text-gray-400 leading-8">基于AI大模型的能力,提供对问答的问答,协助快速熟悉文档</p>
+      </div>
+    </div>
+
+  </section>
+
+
+  <section class="section-cta">
+
+    <div class="container grid grid-cols-2 gap-x-10">
+
+      <img class="rounded" src="../../assets/cta.jpeg" />
+
+      <div class=" flex flex-col gap-3">
+        <h2 class=" text-4xl font-bold">Subscribe</h2>
+        <p class=" font-mono text-xl font-normal text-gray-400"></p>
+        <div class="flex gap-2">
+          <el-input v-model="email" placeholder="输入您的邮箱地址" clearable />
+          <el-button type="primary" plain>提交</el-button>
+        </div>
+        <p class="  text-base italic font-bold">输入您的邮箱,以便接收我们最新的产品通知</p>
+      </div>
+    </div>
+
+
+
+  </section>
 </template>
 
 <style scoped >
@@ -208,7 +264,7 @@
 .step-number {
   font-size: 8.6rem;
   font-weight: 600;
-  color: #e5e7eb;
+  color: #adb5bd;
   margin-bottom: 1.2rem;
 }
 
@@ -249,6 +305,23 @@
   height: 85%;
   border-radius: 10px;
 }
+
+/* section how */
+.section-how {
+  margin-top: 3rem;
+}
+
+/* section feature */
+.section-feature {
+  padding: 2.4rem 4.8rem;
+  margin-top: 5rem;
+}
+
+
+/* section-cta */
+.section-cta {
+  margin: 6rem 0;
+}
 </style>
 
 
@@ -259,17 +332,12 @@ import useUserStore from '@/store/user'
 
 // 全局状态
 const userStore = useUserStore();
-
+const email = ref("")
 let message = ref(null)
 let name = ref(null)
 let message_available = ref(false)
 
-// onMounted(
-//   async function () {
-//     await login_status();
-//     console.log("用户登录状态: " + userStore.userLoggedIn)
-//   }
-// )
+
 async function login_status() {
   let response = await fetch('api/status')
   if (response.ok) {

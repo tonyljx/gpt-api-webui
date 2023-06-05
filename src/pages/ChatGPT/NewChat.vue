@@ -1,32 +1,24 @@
 <template>
-  <div class=" w-screen flex">
+  <div class=" flex">
 
 
-    <div class="system  ">
-      <!--    <TheUpload></TheUpload>-->
-      <button class="bg-red-200 hover:bg-red-300 rounded-md  w-10/12 h-12 text-lg font-bold mt-5 self-center">
+    <div class="system ">
+
+      <button class="bg-teal-300 hover:bg-teal-400 rounded-md  w-10/12 h-12 text-lg font-bold mt-5 self-center">
         新建对话
       </button>
 
       <ul class="text-center font-bold mt-2 ">
         <li class="mt-2 rounded-md border-2 border-gray-400 px-3 py-2 text-gray-700
-         hover:text-gray-400 hover:border-green-400 ">
+         hover:text-gray-400 hover:border-blue-400 cursor-pointer ">
           聊天记录1
-        </li>
-        <li class="mt-2 rounded-md border-2 border-gray-400 px-3 py-2 text-gray-700
-        hover:text-gray-400 hover:border-green-400">
-          聊天记录2
-        </li>
-        <li class="mt-2 rounded-md border-2 border-gray-400 px-3 py-2 text-gray-700
-        hover:text-gray-400 hover:border-green-400">
-          聊天记录3
         </li>
       </ul>
 
     </div>
 
 
-    <div class="chat-box-container">
+    <div class="chat-box-container  ">
 
       <div class="chat-box-content-container">
         <div v-for="(message, index) in messages" :key="index">
@@ -40,9 +32,8 @@
       </div>
 
       <div class="chat-box-footer">
-        <el-input type="textarea" placeholder="input here... press Enter to send Message" v-model="newMessage"
-          @keydown.enter.prevent @keyup.enter="submitMessage_fetch" @keyup.enter.shift="handleShiftEnter"
-          :suffix-icon="Position">
+        <el-input placeholder="input here... press Enter to send Message" v-model="newMessage" @keydown.enter.prevent
+          @keyup.enter="submitMessage_fetch" @keyup.enter.shift="handleShiftEnter" :suffix-icon="Promotion">
         </el-input>
       </div>
 
@@ -57,7 +48,7 @@ import UserMessage from "@/components/chat/UserMessage.vue";
 import GptMessage from "@/components/chat/GptMessage.vue";
 import { onMounted, ref } from "vue";
 import { nextTick } from "vue";
-import { Position } from '@element-plus/icons-vue'
+import { Promotion } from '@element-plus/icons-vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import useUserStore from '@/store/user'
 import { ElMessage } from "element-plus";
@@ -213,7 +204,7 @@ function handleShiftEnter() {
   height: 90vh;
   padding: 1rem;
   margin-right: 1rem;
-  border: 2px solid #9ca3af;
+
 }
 
 .prompt {
@@ -223,17 +214,19 @@ function handleShiftEnter() {
 
 .chat-box-container {
   /* 两列的设置 */
-  flex-grow: 3;
   /* border: 1px solid rgba(0,0,0,0.26); */
-  padding: 1em;
-  margin-right: 1em;
+  flex-grow: 2;
+  padding: 2.4rem 4.8rem;
   display: flex;
   flex-direction: column;
   height: 90vh;
+  max-width: 100rem;
+  position: relative;
+  border-left: 2px solid #ddd;
 }
 
 .chat-box-content-container {
-  flex: 1;
+  min-width: 50rem;
   overflow-y: auto;
   margin-bottom: 1em;
   margin-top: 1em;
@@ -244,8 +237,12 @@ function handleShiftEnter() {
 /* config */
 
 .chat-box-footer {
+  position: absolute;
+  bottom: 2rem;
+  width: 50rem;
   display: flex;
   gap: 10px;
+  align-self: center;
 }
 
 .chat-box-footer input {

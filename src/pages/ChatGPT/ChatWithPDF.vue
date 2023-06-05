@@ -3,7 +3,8 @@
 
     <div class="file-previewer">
       <!-- <iframe id="myPdf" src="./meituan_course.pdf"></iframe> -->
-      <embed id="myPdf" src="./meituan_course.pdf#page=2" type="application/pdf" width="100%">
+      <!-- src="./meituan_course.pdf#page=2" -->
+      <embed id="myPdf" :src="store.fileUrl" type="application/pdf" width="100%">
     </div>
 
     <div class="chat-box-container">
@@ -20,7 +21,7 @@
       </div>
 
       <div class="chat-box-footer">
-        <el-input placeholder="input here... press Enter to send Message" v-model="newMessage" @keydown.enter.prevent
+        <el-input placeholder="在这里输入你的问题,按Enter提交" v-model="newMessage" @keydown.enter.prevent
           @keyup.enter="submitMessage_fetch" @keyup.enter.shift="handleShiftEnter" :suffix-icon="Promotion">
         </el-input>
 
@@ -46,7 +47,9 @@ import { ElMessage, ElNotification } from "element-plus";
 import useUserStore from '@/store/user'
 import { Promotion } from '@element-plus/icons-vue'
 // 全局状态
-const userStore = useUserStore();
+// const userStore = useUserStore();
+
+
 // onMounted(
 //   () => {
 //     if (!userStore.userLoggedIn) {
@@ -63,7 +66,7 @@ const userStore = useUserStore();
 //     }
 //   }
 // )
-
+const pdfFileUrl = store.fileUrl;
 const sendMessageCnt = ref(0);
 const disabledInput = ref(false);
 const date = "2023年04月09日15:38:07";
@@ -74,7 +77,6 @@ const messages = ref([
     "date": "2023年04月09日15:52:37",
   }
 ]);
-
 const newMessage = ref("");
 
 const options = {
@@ -183,7 +185,9 @@ function handleShiftEnter() {
   height: 90vh;
 }
 
-.chat-box-container {}
+.chat-box-container {
+  position: relative;
+}
 
 .chat-box-content-container {
   flex: 1;
@@ -192,6 +196,13 @@ function handleShiftEnter() {
   margin-top: 1em;
   display: flex;
   flex-direction: column;
+}
+
+.chat-box-footer {
+  position: absolute;
+  width: 90%;
+  bottom: 2rem;
+  right: 1rem;
 }
 
 /* config */

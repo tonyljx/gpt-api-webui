@@ -82,6 +82,7 @@ const handleFileChange = () => {
   // 使用URL来处理
   const URL = window.URL || window.webkitURL;
   const pdfUrl = URL.createObjectURL(file);
+  store.setFileUrl(pdfUrl);
   console.log(pdfUrl)
 }
 

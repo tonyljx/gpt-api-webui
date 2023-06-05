@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 // const defaultTheme = require('tailwindcss/defaultTheme')
-// const plugin = require('tailwindcss/plugin')
+const plugin = require('tailwindcss/plugin')
 const Color = require('color')
 
 module.exports = {

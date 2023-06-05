@@ -45,7 +45,7 @@ const handlerCommand = async function (command) {
 
 <template>
   <header class="flex items-center justify-between px-10 h-20 ">
-    <img src="../static/logos/logo2.png" class="logo" />
+    <img src="../static/logos/logo3.png" class="logo" />
     <nav class="flex items-center gap-12 navigation">
       <router-link :class="{ 'link-active': currentNav === '/' }" class="router text-lg font-bold hover:text-teal-500"
         to="/">首页
@@ -65,10 +65,16 @@ const handlerCommand = async function (command) {
       </router-link>
 
 
+      <router-link :class="{ 'link-active': currentNav === '/admin' }"
+        class="router text-lg font-bold hover:text-teal-500" to="/admin">后台管理
+      </router-link>
+
 
       <router-link v-if="!userStore.userLoggedIn" :class="{ 'link-active': currentNav === '/login' }"
         class="router text-lg font-bold  cta" to="/login">登录
       </router-link>
+
+
 
       <el-dropdown v-else trigger="click" @command="handlerCommand">
         <span class="el-dropdown-link">
@@ -131,7 +137,7 @@ const handlerCommand = async function (command) {
 }
 
 .container {
-  max-width: 120rem;
+  max-width: 140rem;
   padding: 0 3.2rem;
   margin: 0 auto;
 }
