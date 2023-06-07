@@ -101,7 +101,7 @@ const handlerCommand = async function (command) {
         <a href="#" class=" block mb-3">
           <img src="../static/logos/logo4.png" class="logo" />
         </a>
-        <p class=" text-base text-cool-gray-500">copyright &copy; 2023 by 新音科技有限公司</p>
+        <p class=" text-base text-cool-gray-500">copyright &copy; 2023 by 蓝色码源(北京)软件科技有限公司</p>
       </div>
 
 
@@ -110,7 +110,7 @@ const handlerCommand = async function (command) {
         <address class="contacts not-italic flex flex-col gap-3">
           <p class="address">北京市海淀区清河街道</p>
           <p>
-            <a class="footer-link" href="415-201-6370"> to be added </a>
+            <a class="footer-link" href="17701330002"> 电话: 17701330002 </a>
             <br />
             <a class="footer-link" href="mailto:852234453@qq.com">852234453@qq.com</a>
           </p>

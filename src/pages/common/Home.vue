@@ -164,7 +164,7 @@
         <p class=" font-mono text-xl font-normal text-gray-400"></p>
         <div class="flex gap-2">
           <el-input v-model="email" placeholder="输入您的邮箱地址" clearable />
-          <el-button type="primary" plain>提交</el-button>
+          <el-button type="primary" :loading="emailLoading" plain @click="send_email">提交</el-button>
         </div>
         <p class="  text-base italic font-bold">输入您的邮箱,以便接收我们最新的产品通知</p>
       </div>
@@ -329,41 +329,36 @@
 
 import { onMounted, ref } from "vue";
 import useUserStore from '@/store/user'
+import axios from 'axios';
+import { ElMessage, ElMessageBox } from 'element-plus'
+
 
 // 全局状态
-const userStore = useUserStore();
 const email = ref("")
-let message = ref(null)
-let name = ref(null)
-let message_available = ref(false)
+const emailLoading = ref(false)
 
 
-async function login_status() {
-  let response = await fetch('api/status')
-  if (response.ok) {
-    message_available.value = true
-    let res = await response.json();
-    // name.value = res.name
-    // message.value = res.data
-    if (res.code === 1) {
-      useUserStore.userLoggedIn = true;
-    }
-  } else {
-    alert("Http Error: " + response.status)
-  }
-}
-
-async function logout() {
-  let response = await fetch('api/logout')
-  userStore.userLoggedIn = false
-  if (response.ok) {
-    let res = await response.json();
-    message_available.value = true
-    message.value = res.data
-    name.value = res.name
-  } else {
-    alert("Http Error: " + response.status)
-  }
+function send_email() {
+  emailLoading.value = true;
+  // setTimeout(() => {
+  //   emailLoading.value = false
+  // }, 3000)
+  axios.post('/api/mail/subscribe', {
+    email: email.value
+  })
+    .then(function (response) {
+      console.log(response);
+      ElMessageBox.alert('邮箱订阅成功', '订阅状态', {
+        // if you want to disable its autofocus
+        // autofocus: false,
+      })
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+    .finally(function () {
+      emailLoading.value = false;
+    })
 }
 
 </script>
