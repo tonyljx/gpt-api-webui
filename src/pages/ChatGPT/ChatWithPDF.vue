@@ -1,20 +1,18 @@
 <template>
   <div class="container ">
 
-    <div class="file-previewer">
-      <!-- <iframe id="myPdf" src="./meituan_course.pdf"></iframe> -->
-      <!-- src="./meituan_course.pdf#page=2" -->
+    <div class="file-previewer" v-if="store.fileUrl">
       <embed id="myPdf" :src="store.fileUrl" type="application/pdf" width="100%">
     </div>
 
-    <div class="chat-box-container">
+    <div class="chat-box-container " :class="{ 'col-span-2': !store.fileUrl }">
 
       <div class="chat-box-content-container">
-        <div v-for="(message, index) in messages" :key="index">
-          <UserMessage :date="message.date" v-if="message.type === 'user'" :message="message.message">
+        <div v-for="(   message, index   ) in    messages   " :key="index">
+          <UserMessage :date="message.date" v-if="message.type === 'user'" :content="message.content">
           </UserMessage>
 
-          <GptMessage :date="message.date" :message="message.message" v-else>
+          <GptMessage :date="message.date" :content="message.content" v-else>
 
           </GptMessage>
         </div>
@@ -24,7 +22,6 @@
         <el-input placeholder="在这里输入你的问题,按Enter提交" v-model="newMessage" @keydown.enter.prevent
           @keyup.enter="submitMessage_fetch" @keyup.enter.shift="handleShiftEnter" :suffix-icon="Promotion">
         </el-input>
-
       </div>
 
     </div>
@@ -36,48 +33,57 @@
 <script setup>
 import UserMessage from "@/components/chat/UserMessage.vue";
 import GptMessage from "@/components/chat/GptMessage.vue";
-import { onMounted, ref } from "vue";
+import { ref, onMounted } from "vue";
 import { nextTick } from "vue";
-import { Position } from '@element-plus/icons-vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-import axios from 'axios';
 import { store } from "@/store";
-import router from "@/router";
-import { ElMessage, ElNotification } from "element-plus";
-import useUserStore from '@/store/user'
 import { Promotion } from '@element-plus/icons-vue'
+import axios from "axios";
 // 全局状态
 // const userStore = useUserStore();
 
 
-// onMounted(
-//   () => {
-//     if (!userStore.userLoggedIn) {
-//       ElNotification({
-//         title: 'Info',
-//         message: '尚未登录,准备转向登录页面',
-//         type: 'info',
-//       })
-//       setTimeout(
-//         () => {
-//           router.push('/login');
-//         }, 2000
-//       )
-//     }
-//   }
-// )
-const pdfFileUrl = store.fileUrl;
-const sendMessageCnt = ref(0);
-const disabledInput = ref(false);
-const date = "2023年04月09日15:38:07";
+
 const messages = ref([
   {
-    "message": "我是PDF问答助手,请问有什么疑问?",
+    "content": "我是PDF问答助手,请问有什么疑问?",
     "type": "chatgpt",
     "date": "2023年04月09日15:52:37",
   }
 ]);
 const newMessage = ref("");
+
+onMounted(
+  () => {
+    // 请求后端接口
+    axios.post('/api/pdf/history', {
+      fileid: store.fileId
+    })
+      .then(function (responses) {
+        // 数据转换
+        for (const message of responses.data) {
+          const historyMessage = {}
+          if (message["type"] === 0) {
+            historyMessage["type"] = "user"
+          } else {
+            historyMessage["type"] = "gpt"
+          }
+          historyMessage["date"] = message["create_time"]
+          historyMessage["content"] = message["content"]
+          messages.value.push(historyMessage)
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {
+        // 总是会执行
+        scrollToBottom();
+      });
+  }
+)
+
+
 
 const options = {
   year: "numeric",
@@ -97,7 +103,7 @@ async function submitMessage_fetch() {
   }
   // 生成用户信息
   const Message = {
-    "message": newMessage.value,
+    "content": newMessage.value,
     "type": "user",
     "date": new Date().toLocaleString('zh-CN', options),
   }
@@ -112,7 +118,7 @@ async function submitMessage_fetch() {
   newMessage.value = "";
 
   const GPTMessage = {
-    "message": '',
+    "content": '',
     "type": "chatgpt",
     "date": new Date().toLocaleString('zh-CN', options),
   };
@@ -128,11 +134,10 @@ async function submitMessage_fetch() {
     body: JSON.stringify({
       filename: store.fileName,
       query: message,
+      fileid: store.fileId
     }),
     async onopen(response) {
       if (response.ok && response.headers.get('content-type') === 'text/event-stream') {
-        // everything's good
-        // console.log('everything\'s good')
       } else if (response.status >= 400 && response.status < 500 && response.status !== 429) {
         console.log('请求错误')
         throw new Error(response.status)
@@ -142,9 +147,9 @@ async function submitMessage_fetch() {
     },
     onmessage(event) {
       let length = messages.value.length;
-      console.log(event)
-      console.log("收到数据: " + event.data)
-      messages.value[length - 1].message += JSON.parse(event.data);
+      // console.log(event)
+      // console.log("收到数据: " + event.data)
+      messages.value[length - 1].content += JSON.parse(event.data);
       scrollToBottom();
     },
     onerror(err) {
@@ -177,6 +182,12 @@ function handleShiftEnter() {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 1rem;
+  height: 100vh;
+  padding: 2.4rem 4.8rem;
+}
+
+.file-previewer {
+  height: 90vh;
 }
 
 
@@ -187,6 +198,7 @@ function handleShiftEnter() {
 
 .chat-box-container {
   position: relative;
+  overflow-y: auto;
 }
 
 .chat-box-content-container {
@@ -196,17 +208,18 @@ function handleShiftEnter() {
   margin-top: 1em;
   display: flex;
   flex-direction: column;
+  height: 85%;
 }
 
 .chat-box-footer {
   position: absolute;
-  width: 90%;
-  bottom: 2rem;
-  right: 1rem;
+  width: 50%;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
 }
 
 /* config */
-
 
 
 textarea {

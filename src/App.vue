@@ -4,17 +4,48 @@ import router from "@/router";
 import { UserFilled } from '@element-plus/icons-vue'
 import useUserStore from '@/store/user'
 import { ElNotification } from 'element-plus'
+import { watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 // 全局状态
 const userStore = useUserStore();
 
 const currentNav = ref("")
-const currentLoginStatus = ref(null)
+
 
 // 路由高亮
 router.beforeEach((to, from, next) => {
-  console.log(to.path)
+  // console.log(to.path)
   currentNav.value = to.path;
   next();
+});
+
+// 根据路由的情况来决定是否显示页脚
+const route = useRoute();
+
+const showFooter = ref(true);
+
+watchEffect(() => {
+  // console.log("useroute: 当前路径 " + route.path)
+  if (route.path === '/chatpdf') {
+    showFooter.value = false;
+  } else {
+    showFooter.value = true;
+  }
+  // console.log("footer value " + showFooter.value)
+});
+
+// 检查是否登录，未登录需要先让用户登录
+router.beforeEach((to, from) => {
+  // console.log(to.name)
+
+  if (to.name !== 'Home' && !userStore.userLoggedIn && to.name !== 'login') {
+    ElNotification({
+      title: '尚未登录',
+      message: '请先登录账户',
+      type: 'warning',
+    })
+    return { name: "login" }
+  }
 });
 
 async function logout() {
@@ -28,6 +59,7 @@ async function logout() {
       message: "已登出账户",
       type: 'success',
     })
+    router.push('/login')
   } else {
     alert("Http Error: " + response.status)
   }
@@ -94,7 +126,7 @@ const handlerCommand = async function (command) {
     <router-view></router-view>
   </main>
 
-  <footer class="footer">
+  <footer class="footer" v-if="showFooter">
     <div class="container grid grid-cols-3 gap-6">
 
       <div class="logo-col">
@@ -134,12 +166,12 @@ const handlerCommand = async function (command) {
 <style scoped>
 * {
   font-size: 10px;
+  padding: 0;
+  margin: 0;
 }
 
 .container {
   max-width: 140rem;
-  padding: 0 3.2rem;
-  margin: 0 auto;
 }
 
 main {

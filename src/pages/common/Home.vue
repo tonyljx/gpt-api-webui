@@ -25,29 +25,40 @@
 
         <div class="mt-10">
           <h2 class="text-2xl font-bold mb-10">支持的文件类型</h2>
-          <div class="flex gap-5">
-            <div class="text-xl font-semibold flex  gap-2">
 
+          <div class="flex gap-5">
+
+            <div class="text-xl font-semibold flex  gap-2">
               <img class=" w-8" src="../../assets/pdf.svg" />
               PDF
             </div>
+          </div>
+        </div>
 
-            <div class="text-xl font-semibold flex gap-2">
 
+        <div class="mt-10">
+          <h2 class="text-2xl font-bold mb-10">正在开发支持的文件类型</h2>
+
+          <div class="flex gap-8">
+            <!-- <div class="text-xl font-semibold flex gap-2">
               <img class=" w-8" src="../../assets/excel.svg" />
               Excel
-            </div>
-            <div class="text-xl font-semibold flex gap-2">
+            </div> -->
 
-              <img class=" w-8" src="../../assets/word.svg" />
+            <div class="text-xl font-semibold flex gap-2">
+              <img class="w-8" src="../../assets/word.svg" />
               Word
             </div>
-            <div class="text-xl font-semibold  flex gap-2">
 
-              <img class=" w-8" src="../../assets/ppt.svg" />
+            <div class="text-xl font-semibold  flex gap-2">
+              <img class="w-8" src="../../assets/ppt.svg" />
               PPT
             </div>
 
+            <div class="text-xl font-semibold  flex gap-2">
+              <img class="w-8" src="../../assets/txt.svg" />
+              TXT
+            </div>
           </div>
         </div>
 
@@ -166,7 +177,7 @@
           <el-input v-model="email" placeholder="输入您的邮箱地址" clearable />
           <el-button type="primary" :loading="emailLoading" plain @click="send_email">提交</el-button>
         </div>
-        <p class="  text-base italic font-bold">输入您的邮箱,以便接收我们最新的产品通知</p>
+        <p class=" text-base italic font-bold">输入您的邮箱,以便接收我们最新的产品通知</p>
       </div>
     </div>
 
@@ -340,9 +351,6 @@ const emailLoading = ref(false)
 
 function send_email() {
   emailLoading.value = true;
-  // setTimeout(() => {
-  //   emailLoading.value = false
-  // }, 3000)
   axios.post('/api/mail/subscribe', {
     email: email.value
   })

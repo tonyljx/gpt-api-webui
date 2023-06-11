@@ -1,4 +1,4 @@
-import {createApp} from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 
 import './assets/main.css'
@@ -18,7 +18,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 //引入hightlight库
-// highlight 的样式，依赖包，组件
 // import 'highlight.js/styles/atom-one-dark.css'
 import 'highlight.js/lib/common'
 import hljsVuePlugin from '@highlightjs/vue-plugin'

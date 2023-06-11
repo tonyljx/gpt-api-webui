@@ -9,4 +9,8 @@ export const store = reactive({
     setFileUrl(fileUrl) {
         this.fileUrl = fileUrl
     },
+    fileId: null,
+    setFileId(fileId) {
+        this.fileId = fileId
+    }
 })

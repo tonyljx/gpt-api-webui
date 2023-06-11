@@ -1,31 +1,27 @@
 <template>
-  <div class=" flex">
+  <div class="flex">
 
 
-    <div class="system ">
-
+    <!-- <div class="system ">
       <button class="bg-teal-300 hover:bg-teal-400 rounded-md  w-10/12 h-12 text-lg font-bold mt-5 self-center">
         新建对话
       </button>
-
       <ul class="text-center font-bold mt-2 ">
         <li class="mt-2 rounded-md border-2 border-gray-400 px-3 py-2 text-gray-700
          hover:text-gray-400 hover:border-blue-400 cursor-pointer ">
           聊天记录1
         </li>
       </ul>
-
-    </div>
-
+    </div> -->
 
     <div class="chat-box-container  ">
 
       <div class="chat-box-content-container">
         <div v-for="(message, index) in messages" :key="index">
-          <UserMessage :date="message.date" v-if="message.type === 'user'" :message="message.message">
+          <UserMessage :date="message.date" v-if="message.type === 'user'" :content="message.content">
           </UserMessage>
 
-          <GptMessage :date="message.date" :message="message.message" v-else>
+          <GptMessage :date="message.date" :content="message.content" v-else>
 
           </GptMessage>
         </div>
@@ -51,48 +47,54 @@ import { nextTick } from "vue";
 import { Promotion } from '@element-plus/icons-vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import useUserStore from '@/store/user'
-import { ElMessage } from "element-plus";
-import router from "@/router";
-import { ElNotification } from 'element-plus'
+import axios from "axios";
 
 // 全局状态
 const userStore = useUserStore();
 const sendMessageCnt = ref(0);
 const disabledInput = ref(false);
 
-const date = "2023年04月09日15:38:07";
-
-
-// onMounted(
-//   () => {
-//     if (!userStore.userLoggedIn) {
-//       ElNotification({
-//         title: 'Info',
-//         message: '尚未登录,准备转向登录页面',
-//         type: 'info',
-//       })
-//       setTimeout(
-//         () => {
-//           router.push('/login');
-//         }, 2000
-//       )
-//     }
-//   }
-// )
-
 const messages = ref([
   {
-    "message": "请问你是谁?"
-    ,
+    "content": "你是谁?",
     "type": "user",
-    "date": "2023年04月09日15:51:40",
+    "date": "2023年04月09日15:52:37",
   },
   {
-    "message": "我是GPT,一个人工智能模型,请问有什么可以帮助你的?",
+    "content": "我是GPT,一个人工智能模型,请问有什么可以帮助你的?",
     "type": "chatgpt",
     "date": "2023年04月09日15:52:37",
   }
 ]);
+
+onMounted(
+  () => {
+    // 请求后端接口
+    axios.get('/api/chat/history')
+      .then(function (responses) {
+        console.log(responses)
+        // 数据转换
+        for (const message of responses.data) {
+          const historyMessage = {}
+          if (message["type"] === 0) {
+            historyMessage["type"] = "user"
+          } else {
+            historyMessage["type"] = "gpt"
+          }
+          historyMessage["date"] = message["create_time"]
+          historyMessage["content"] = message["content"]
+          messages.value.push(historyMessage)
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {
+        // 总是会执行
+        scrollToBottom();
+      });
+  }
+)
 
 const newMessage = ref("");
 
@@ -108,23 +110,12 @@ const options = {
 };
 
 async function submitMessage_fetch() {
-  // console.log("submit Messgae: "+newMessage.value);
-  console.log(userStore.userLoggedIn)
-  if (userStore.userLoggedIn === false) {
-    ElMessage({
-      message: '尚未登录, 即将跳转',
-      type: 'success',
-    })
-    router.push('/login');
-    return;
-  }
-
   if (newMessage.value.trim() === '') {
     return;
   }
   // 生成用户信息
   const Message = {
-    "message": newMessage.value,
+    "content": newMessage.value,
     "type": "user",
     "date": new Date().toLocaleString('zh-CN', options),
   }
@@ -133,27 +124,25 @@ async function submitMessage_fetch() {
 
   // 把消息滑动到最下方
   scrollToBottom();
-
-  console.log("发送消息: ", newMessage.value);
   const message = newMessage.value;
   newMessage.value = "";
 
   const GPTMessage = {
-    "message": '',
+    "content": '',
     "type": "chatgpt",
     "date": new Date().toLocaleString('zh-CN', options),
   };
 
   messages.value.push(GPTMessage);
 
-  await fetchEventSource('/api/stream', {
+  await fetchEventSource('/api/chat/stream', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: message }]
+      messages: message
     }),
     async onopen(response) {
       if (response.ok && response.headers.get('content-type') === 'text/event-stream') {
@@ -169,7 +158,7 @@ async function submitMessage_fetch() {
     onmessage(event) {
       let length = messages.value.length;
       console.log("收到数据: " + event.data)
-      messages.value[length - 1].message += JSON.parse(event.data);
+      messages.value[length - 1].content += JSON.parse(event.data);
       scrollToBottom();
     },
     onerror(err) {
@@ -219,7 +208,7 @@ function handleShiftEnter() {
   padding: 2.4rem 4.8rem;
   display: flex;
   flex-direction: column;
-  height: 90vh;
+  height: 93vh;
   max-width: 100rem;
   position: relative;
   border-left: 2px solid #ddd;

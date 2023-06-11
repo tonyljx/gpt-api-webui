@@ -14,7 +14,7 @@
     </div>
 
     <div class="message-action">
-      <div class="message-action date" style="font-size: 10px">{{date}}</div>
+      <div class="message-action date" style="font-size: 10px">{{ date }}</div>
     </div>
   </div>
 </template>
@@ -24,18 +24,17 @@
 <script setup>
 import { marked } from 'marked'
 import GptAvatar from "@/components/chat/GptAvatar.vue";
-import {computed, ref} from "vue";
+import { computed, ref } from "vue";
 // import 'github-markdown-css';
 
 
 const props = defineProps({
   date: String,
-  message: String,
+  content: String,
 });
 
-const testMessage = ref('d+f');
 
-const HTMLmessage = computed(() => marked(props.message))
+const HTMLmessage = computed(() => marked(props.content))
 // console.log(HTMLmessage);
 
 </script>
@@ -43,7 +42,6 @@ const HTMLmessage = computed(() => marked(props.message))
 
 
 <style scoped>
-
 /* 设置消息容器的架构 */
 .message-user-container {
   display: flex;
@@ -51,14 +49,14 @@ const HTMLmessage = computed(() => marked(props.message))
   align-items: flex-end;
 }
 
-.message-item{
+.message-item {
   min-width: 70%;
   max-width: 100%;
   display: flex;
   flex-direction: row-reverse;
 }
 
-.user{
+.user {
   padding: 10px;
   border-radius: 5px;
   margin: 10px;
@@ -67,13 +65,12 @@ const HTMLmessage = computed(() => marked(props.message))
   background-color: #c0efeb;
 }
 
-.markdown-body{
+.markdown-body {
   background-color: #c0efeb;
 }
 
-.message-action .date{
+.message-action .date {
   font-size: 10px;
   color: rgb(134, 127, 127);
 }
-
 </style>

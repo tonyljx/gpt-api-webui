@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import Home from '../pages/common/Home.vue'
 import About from '../pages/other/About.vue'
 import Beishan from "@/pages/other/Beishan.vue";
@@ -9,7 +9,6 @@ import MarkDownPage from "@/pages/common/MarkDown.vue";
 import Login from "@/pages/common/Login.vue";
 import Upload from "@/pages/common/Upload.vue";
 import ChatWithPDF from "@/pages/ChatGPT/ChatWithPDF.vue";
-import PDFReader from "@/pages/ChatGPT/PDFReader.vue";
 import Admin from "@/pages/common/Admin.vue";
 const routes = [
     {
@@ -60,22 +59,17 @@ const routes = [
     {
         path: '/chatpdf',
         name: 'chatpdf',
-        component: ChatWithPDF
+        component: ChatWithPDF,
     },
     {
         path: '/admin',
         name: "admin",
         component: Admin
     }
-    // {
-    //     path: '/pdfreader',
-    //     name: 'pdfreader',
-    //     component: PDFReader
-    // }
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes
 })
 

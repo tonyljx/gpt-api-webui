@@ -9,7 +9,7 @@
         登录账号, 解锁第二大脑🚀
       </h1>
 
-      <el-tabs v-model="activeName" class="tabs" @tab-click="handleClick" stretch="true">
+      <el-tabs v-model="activeName" class="tabs" :stretch="true">
         <el-tab-pane label="登录" name="first">
           <form class="login-form shadow-lg ">
             <div>
@@ -42,7 +42,7 @@ text-white text-base font-bold" @click.prevent="submitUserMessage">
           </form>
         </el-tab-pane>
 
-        <el-tab-pane label="注册" name="second">
+        <el-tab-pane label="注册-暂未开放" name="second">
           <form class="login-form shadow-lg ">
 
             <div>
@@ -52,7 +52,7 @@ text-white text-base font-bold" @click.prevent="submitUserMessage">
 
               <input class="login-input block w-full text-sm rounded
 border-gray-200  
-" placeholder="user" type="text" id="username" name="username" required v-model="username" />
+" placeholder="user" type="text" id="reg-username" name="username" required v-model="username" />
             </div>
 
             <div>
@@ -63,7 +63,7 @@ border-gray-200
               <input class="login-input block w-full  text-sm rounded
 border-gray-200  
 focus:outline-none focus:shadow-outline-red
-form-input  " placeholder="***" type="password" id="password" name="password" required v-model="password" />
+form-input  " placeholder="***" type="password" id="reg-password" name="password" required v-model="password" />
             </div>
 
             <div>
@@ -74,7 +74,7 @@ form-input  " placeholder="***" type="password" id="password" name="password" re
               <input class="login-input block w-full  text-sm rounded
                       border-gray-200  
                       focus:outline-none focus:shadow-outline-red
-                  form-input " placeholder="***" type="password" id="password" name="password" required
+                  form-input " placeholder="***" type="password" id="reg-rp-password" name="password" required
                 v-model="password" />
             </div>
 
@@ -89,10 +89,6 @@ text-white text-base font-bold" @click.prevent="submitUserMessage">
         </el-tab-pane>
 
       </el-tabs>
-
-
-
-
     </div>
 
 
@@ -106,11 +102,12 @@ text-white text-base font-bold" @click.prevent="submitUserMessage">
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: 140rem;
 }
 
-.tabs {
+/* .tabs {
   max-width: 45rem;
-}
+} */
 
 .login-form {
   display: block;
@@ -152,9 +149,20 @@ const password = ref("");
 
 const activeName = ref('first')
 
+// yupi -验证 development 还是 production
+console.log("判断环境: " + process.env.NODE_ENV)
+console.log(import.meta.env.MODE)
+console.log(import.meta.env.VITE_APP_API_URL)
+
 function submitUserMessage() {
   // console.log(username.value+" "+password.value);
-  axios.post('/api/login', {
+
+  axios.get(`${import.meta.env.VITE_APP_API_URL}`)
+    .then(function (response) {
+      console.log(response)
+    })
+
+  axios.post('http://127.0.0.1:5000/api/login', {
     name: username.value,
     password: password.value,
   })
