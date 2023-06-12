@@ -181,8 +181,6 @@
       </div>
     </div>
 
-
-
   </section>
 </template>
 
@@ -206,6 +204,7 @@
   padding: 0 3.2rem;
   display: grid;
   grid-template-columns: 1fr 1.6fr;
+  height: 100vh;
   /* align-items: center; */
 }
 
@@ -319,7 +318,7 @@
 
 /* section how */
 .section-how {
-  margin-top: 3rem;
+  margin-top: 10rem;
 }
 
 /* section feature */

@@ -155,14 +155,12 @@ console.log(import.meta.env.MODE)
 console.log(import.meta.env.VITE_APP_API_URL)
 
 function submitUserMessage() {
-  // console.log(username.value+" "+password.value);
-
-  axios.get(`${import.meta.env.VITE_APP_API_URL}`)
+  axios.get(`${import.meta.env.VITE_APP_API_DEV_URL}`)
     .then(function (response) {
       console.log(response)
     })
 
-  axios.post('http://127.0.0.1:5000/api/login', {
+  axios.post('/api/login', {
     name: username.value,
     password: password.value,
   })

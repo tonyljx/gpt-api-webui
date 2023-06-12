@@ -212,7 +212,7 @@ header {
 
 /* footer */
 .footer {
-  padding: 6.4rem 0;
+  padding: 6.4rem 3.2rem;
   border-top: 1px solid #ddd;
 }
 
