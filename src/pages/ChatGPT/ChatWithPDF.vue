@@ -39,6 +39,8 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { store } from "@/store";
 import { Promotion } from '@element-plus/icons-vue'
 import axios from "axios";
+import apiUrl from '@/api'
+import myAxios from "@/api/axios";
 // 全局状态
 // const userStore = useUserStore();
 
@@ -56,7 +58,7 @@ const newMessage = ref("");
 onMounted(
   () => {
     // 请求后端接口
-    axios.post('/api/pdf/history', {
+    myAxios.post('/api/pdf/history', {
       fileid: store.fileId
     })
       .then(function (responses) {
@@ -97,7 +99,6 @@ const options = {
 };
 
 async function submitMessage_fetch() {
-  // console.log("submit Messgae: "+newMessage.value);
   if (newMessage.value.trim() === '') {
     return;
   }
@@ -107,26 +108,21 @@ async function submitMessage_fetch() {
     "type": "user",
     "date": new Date().toLocaleString('zh-CN', options),
   }
-
   messages.value.push(Message);
 
   // 把消息滑动到最下方
   scrollToBottom();
-
-  console.log("发送消息: ", newMessage.value);
+  // console.log("发送消息: ", newMessage.value);
   const message = newMessage.value;
   newMessage.value = "";
-
   const GPTMessage = {
     "content": '',
     "type": "chatgpt",
     "date": new Date().toLocaleString('zh-CN', options),
   };
-
   messages.value.push(GPTMessage);
 
-
-  await fetchEventSource('/api/pdf/ask', {
+  await fetchEventSource(`${apiUrl}/api/pdf/ask`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -147,12 +143,12 @@ async function submitMessage_fetch() {
     },
     onmessage(event) {
       let length = messages.value.length;
-      // console.log(event)
       // console.log("收到数据: " + event.data)
       messages.value[length - 1].content += JSON.parse(event.data);
       scrollToBottom();
     },
     onerror(err) {
+      messages.value[length - 1].content += "服务器报错,请稍后尝试";
       throw err;
     }
   });

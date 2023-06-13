@@ -35,6 +35,9 @@ import { Promotion } from '@element-plus/icons-vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import useUserStore from '@/store/user'
 import axios from "axios";
+import apiUrl from '@/api'
+import myAxios from "@/api/axios";
+
 
 // 全局状态
 const userStore = useUserStore();
@@ -57,9 +60,9 @@ const messages = ref([
 onMounted(
   () => {
     // 请求后端接口
-    axios.get(`/api/chat/history`)
+    myAxios.get(`/api/chat/history`)
       .then(function (responses) {
-        console.log(responses)
+        // console.log(responses)
         // 数据转换
         for (const message of responses.data) {
           const historyMessage = {}
@@ -122,7 +125,7 @@ async function submitMessage_fetch() {
 
   messages.value.push(GPTMessage);
 
-  await fetchEventSource('/api/chat/stream', {
+  await fetchEventSource(`${apiUrl}/api/chat/stream`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -149,6 +152,7 @@ async function submitMessage_fetch() {
       scrollToBottom();
     },
     onerror(err) {
+      messages.value[length - 1].content += "遇到报错,请稍后尝试";
       throw err;
     }
   });

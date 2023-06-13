@@ -139,7 +139,7 @@ text-white text-base font-bold" @click.prevent="submitUserMessage">
 <script setup>
 
 import { ref } from "vue";
-import axios from "axios";
+// import axios from "axios";
 import myAxios from "@/api/axios";
 import { useRouter } from "vue-router";
 import { ElMessage, ElNotification } from 'element-plus'
@@ -153,7 +153,7 @@ const activeName = ref('first')
 const loginLoading = ref(false)
 
 // yupi -验证 development 还是 production
-console.log("判断环境: " + process.env.NODE_ENV)
+// console.log("判断环境: " + process.env.NODE_ENV)
 // console.log(import.meta.env.MODE)
 
 function submitUserMessage() {

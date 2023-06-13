@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import axios from 'axios';
 import './assets/main.css'
 import './index.css'
 import router from './router/index'
@@ -17,8 +16,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
 
-// 跨域
-axios.defaults.withCredentials = true;//这行代码是必须的，否则跨域会失效
 
 //引入hightlight库
 // import 'highlight.js/styles/atom-one-dark.css'
