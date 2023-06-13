@@ -153,7 +153,7 @@ const handleUploadClick = async () => {
   formData.append('file', file)
   loading.value = true
   try {
-    const response = await axios.post(`/api/files/upload`, formData, { withCredentials: true });
+    const response = await myAxios.post(`/api/files/upload`, formData, { withCredentials: true });
 
     if (!response.isAxiosError) {
       const res = response.data;

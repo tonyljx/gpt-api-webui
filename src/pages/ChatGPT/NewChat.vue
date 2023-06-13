@@ -131,6 +131,7 @@ async function submitMessage_fetch() {
       'Content-Type': 'application/json',
     },
     mode: 'cors',
+    credentials: 'include',
     body: JSON.stringify({
       model: 'gpt-3.5-turbo',
       messages: message
