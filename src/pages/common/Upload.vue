@@ -122,8 +122,6 @@ onMounted(() => {
         // 响应状态码不在 200-299 范围内
         console.error('请求失败：', response.status);
       } else {
-        // 响应状态码在 200-299 范围内
-        // console.log('请求成功：', response.status);
         fileList.value = response.data;
       }
     })
