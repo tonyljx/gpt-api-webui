@@ -1,3 +1,5 @@
+// index.js 
+
 const axios = require('axios');
 
 const openaiUrl = 'https://api.openai.com/v1/chat/completions';
@@ -39,12 +41,12 @@ axios({
                     // console.log(parsed.choices);
                     console.log(parsed.choices[0].delta);
 
-                    if('role' in  parsed.choices[0].delta){
-                        console.log("角色是: ",parsed.choices[0].delta.role);
+                    if ('role' in parsed.choices[0].delta) {
+                        console.log("角色是: ", parsed.choices[0].delta.role);
                     }
 
-                    if('content' in parsed.choices[0].delta){
-                        console.log("内容: ",parsed.choices[0].delta.content);
+                    if ('content' in parsed.choices[0].delta) {
+                        console.log("内容: ", parsed.choices[0].delta.content);
                     }
                 } catch (error) {
                     console.error('Could not JSON parse stream message', message, error);

@@ -1,19 +1,6 @@
 <template>
   <div class="flex">
 
-
-    <!-- <div class="system ">
-      <button class="bg-teal-300 hover:bg-teal-400 rounded-md  w-10/12 h-12 text-lg font-bold mt-5 self-center">
-        新建对话
-      </button>
-      <ul class="text-center font-bold mt-2 ">
-        <li class="mt-2 rounded-md border-2 border-gray-400 px-3 py-2 text-gray-700
-         hover:text-gray-400 hover:border-blue-400 cursor-pointer ">
-          聊天记录1
-        </li>
-      </ul>
-    </div> -->
-
     <div class="chat-box-container  ">
 
       <div class="chat-box-content-container">
@@ -70,7 +57,7 @@ const messages = ref([
 onMounted(
   () => {
     // 请求后端接口
-    axios.get('/api/chat/history')
+    axios.get(`/api/chat/history`)
       .then(function (responses) {
         console.log(responses)
         // 数据转换
@@ -209,7 +196,7 @@ function handleShiftEnter() {
   display: flex;
   flex-direction: column;
   height: 93vh;
-  max-width: 100rem;
+  max-width: 140rem;
   position: relative;
   border-left: 2px solid #ddd;
 }

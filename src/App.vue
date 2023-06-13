@@ -6,12 +6,12 @@ import useUserStore from '@/store/user'
 import { ElNotification } from 'element-plus'
 import { watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
+import apiUrl from '@/api';
+import axios from "axios";
+
 // 全局状态
 const userStore = useUserStore();
-
 const currentNav = ref("")
-
-
 // 路由高亮
 router.beforeEach((to, from, next) => {
   // console.log(to.path)
@@ -21,7 +21,6 @@ router.beforeEach((to, from, next) => {
 
 // 根据路由的情况来决定是否显示页脚
 const route = useRoute();
-
 const showFooter = ref(true);
 
 watchEffect(() => {
@@ -31,7 +30,6 @@ watchEffect(() => {
   } else {
     showFooter.value = true;
   }
-  // console.log("footer value " + showFooter.value)
 });
 
 // 检查是否登录，未登录需要先让用户登录
@@ -49,19 +47,20 @@ router.beforeEach((to, from) => {
 });
 
 async function logout() {
-  let response = await fetch('api/logout')
-  userStore.userLoggedIn = false
-  if (response.ok) {
-    let res = await response.json();
-    console.log(res)
+
+  try {
+    const response = await axios.get(`${apiUrl}/api/logout`);
+    userStore.userLoggedIn = false;
+    console.log(response.data);
     ElNotification({
       title: 'Success',
       message: "已登出账户",
       type: 'success',
-    })
-    router.push('/login')
-  } else {
-    alert("Http Error: " + response.status)
+    });
+    router.push('/login');
+  } catch (error) {
+    console.error(error);
+    alert("Http Error: " + error.response.status);
   }
 }
 

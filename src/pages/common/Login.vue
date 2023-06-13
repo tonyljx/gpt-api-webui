@@ -36,7 +36,7 @@ border-gray-200
 
             <button type="submit" class="inline-block mt-3 w-full h-10 rounded-md
 bg-blue-500  hover:bg-blue-600
-text-white text-base font-bold" @click.prevent="submitUserMessage">
+text-white text-base font-bold" @click.prevent="submitUserMessage" v-loading="loginLoading">
               Login
             </button>
           </form>
@@ -89,6 +89,8 @@ text-white text-base font-bold" @click.prevent="submitUserMessage">
         </el-tab-pane>
 
       </el-tabs>
+
+
     </div>
 
 
@@ -138,6 +140,7 @@ text-white text-base font-bold" @click.prevent="submitUserMessage">
 
 import { ref } from "vue";
 import axios from "axios";
+import myAxios from "@/api/axios";
 import { useRouter } from "vue-router";
 import { ElMessage, ElNotification } from 'element-plus'
 import useUserStore from '@/store/user'
@@ -146,28 +149,22 @@ const userStore = useUserStore();
 const router = useRouter();
 const username = ref("");
 const password = ref("");
-
 const activeName = ref('first')
+const loginLoading = ref(false)
 
 // yupi -验证 development 还是 production
 console.log("判断环境: " + process.env.NODE_ENV)
-console.log(import.meta.env.MODE)
-console.log(import.meta.env.VITE_APP_API_URL)
+// console.log(import.meta.env.MODE)
 
 function submitUserMessage() {
-  axios.get(`${import.meta.env.VITE_APP_API_DEV_URL}`)
-    .then(function (response) {
-      console.log(response)
-    })
-
-  axios.post('/api/login', {
+  loginLoading.value = true;
+  myAxios.post(`/api/login`, {
     name: username.value,
     password: password.value,
-  })
+  }, { withCredentials: true })
     .then(function (response) {
-      // console.log(response);
+      loginLoading.value = false
       if (response.status == 200) {
-        // console.log(router);
         ElMessage({
           message: '登陆成功: Welcome ' + username.value,
           type: 'success',
@@ -181,6 +178,7 @@ function submitUserMessage() {
       }
     })
     .catch(function (error) {
+      loginLoading.value = false
       ElMessage.error('登录失败')
       console.log(error);
       username.value = '';

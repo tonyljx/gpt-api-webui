@@ -23,6 +23,10 @@
 
     <p v-if="uploadStatus">{{ uploadStatus }}</p>
 
+    <button class="mt-10 bg-red-300" @click="showStatus">
+      Click me
+    </button>
+
     <!-- <section class="flex w-8/12 ">
       <a href="https://www.baidu.com" target="_blank">
         <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transform
@@ -48,8 +52,6 @@
     </section> -->
 
     <div class="w-8/12 mt-10">
-
-
       <el-table :data="filterfileList" stripe>
 
         <el-table-column label="文件名">
@@ -79,7 +81,6 @@
           </template>
         </el-table-column>
       </el-table>
-
     </div>
 
 
@@ -90,12 +91,11 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios';
+import myAxios from "@/api/axios";
 import { useRouter } from "vue-router";
 import { ElNotification, ElMessage, ElMessageBox } from 'element-plus'
 import { h } from 'vue'
-// 存储状态，方便chatwithpdf获取
 import { store } from "@/store";
-// 声明一个变量，存储文件上传时候的名字
 import { Timer } from '@element-plus/icons-vue'
 
 const router = useRouter();
@@ -114,9 +114,9 @@ const filterfileList = computed(() =>
   )
 )
 
-// 挂载时请求接口，虎丘文件
+// 挂载时请求接口， 获取 s文件
 onMounted(() => {
-  axios.get('/api/files/list')
+  myAxios.get(`/api/files/list`)
     .then(function (response) {
       if (response.isAxiosError) {
         // 响应状态码不在 200-299 范围内
@@ -124,7 +124,6 @@ onMounted(() => {
       } else {
         // 响应状态码在 200-299 范围内
         // console.log('请求成功：', response.status);
-        // console.log(response.data)
         fileList.value = response.data;
       }
     })
@@ -156,7 +155,7 @@ const handleUploadClick = async () => {
   formData.append('file', file)
   loading.value = true
   try {
-    const response = await axios.post('/api/files/upload', formData);
+    const response = await axios.post(`/api/files/upload`, formData, { withCredentials: true });
 
     if (!response.isAxiosError) {
       const res = response.data;
@@ -194,6 +193,13 @@ function handleFileDelete() {
   ElMessageBox.alert('暂不支持删除,请联系管理员进行操作', '删除文件索引', {
     confirmButtonText: '确认',
   })
+}
+
+function showStatus() {
+  myAxios.get(`/api/status`)
+    .then(function (response) {
+      console.log(response.data)
+    })
 }
 
 
