@@ -11,8 +11,8 @@
       <span class="mt-2 text-base leading-normal" v-if="fileName">{{ fileName }}</span>
       <span class="mt-2 text-base leading-normal font-semibold" v-else>选择一个文件上传</span>
 
-      <input type='file' accept=".pdf,.csv,.xls,.xlsx,.ppt,.pptx,.doc,.docx" class="hidden" @change="handleFileChange"
-        ref="fileInput" @dragover.prevent @drop="handleFileChange" />
+      <input type='file' accept=".pdf" class="hidden" @change="handleFileChange" ref="fileInput" @dragover.prevent
+        @drop="handleFileChange" />
     </label>
 
     <button class="mt-6 mb-6 bg-teal-300  duration-300 
