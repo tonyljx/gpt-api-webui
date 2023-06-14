@@ -127,6 +127,8 @@ async function submitMessage_fetch() {
     headers: {
       'Content-Type': 'application/json',
     },
+    mode: 'cors',
+    credentials: 'include',
     body: JSON.stringify({
       filename: store.fileName,
       query: message,

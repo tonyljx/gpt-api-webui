@@ -161,7 +161,7 @@ function submitUserMessage() {
   myAxios.post(`/api/login`, {
     name: username.value,
     password: password.value,
-  }, { withCredentials: true })
+  })
     .then(function (response) {
       loginLoading.value = false
       if (response.status == 200) {

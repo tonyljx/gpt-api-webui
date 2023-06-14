@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "publish": "vite build && scp -r dist/* ubuntu@120.53.243.70:/home/ubuntu/gpt/front-demo"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",

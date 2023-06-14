@@ -149,7 +149,7 @@ async function submitMessage_fetch() {
     },
     onmessage(event) {
       let length = messages.value.length;
-      console.log("收到数据: " + event.data)
+      // console.log("收到数据: " + event.data)
       messages.value[length - 1].content += JSON.parse(event.data);
       scrollToBottom();
     },
