@@ -23,9 +23,6 @@
 
     <p v-if="uploadStatus">{{ uploadStatus }}</p>
 
-    <button class="mt-10 bg-red-300" @click="showStatus">
-      Click me
-    </button>
 
     <!-- <section class="flex w-8/12 ">
       <a href="https://www.baidu.com" target="_blank">
@@ -90,7 +87,6 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import axios from 'axios';
 import myAxios from "@/api/axios";
 import { useRouter } from "vue-router";
 import { ElNotification, ElMessage, ElMessageBox } from 'element-plus'

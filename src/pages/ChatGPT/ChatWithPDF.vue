@@ -38,13 +38,16 @@ import { nextTick } from "vue";
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { store } from "@/store";
 import { Promotion } from '@element-plus/icons-vue'
-import axios from "axios";
+// import axios from "axios";
 import apiUrl from '@/api'
 import myAxios from "@/api/axios";
+import { ElNotification } from 'element-plus'
+import { h } from 'vue'
+import { useRouter } from "vue-router";
 // 全局状态
 // const userStore = useUserStore();
 
-
+const router = useRouter();
 
 const messages = ref([
   {
@@ -57,6 +60,18 @@ const newMessage = ref("");
 
 onMounted(
   () => {
+
+    if (!store.fileUrl) {
+      ElNotification({
+        title: 'PDF对话',
+        message: h('i', { style: 'color: teal' }, "请上传PDF或选择已上传的文件"),
+      });
+      setTimeout(() => {
+        router.push('/file');
+      }, 1000)
+
+    }
+
     // 请求后端接口
     myAxios.post('/api/pdf/history', {
       fileid: store.fileId
@@ -162,7 +177,9 @@ function scrollToBottom() {
   nextTick(
     () => {
       const messageContainer = document.querySelector('.chat-box-content-container');
-      messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
+      if (!messageContainer) {
+        messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
+      }
     }
   );
 }
