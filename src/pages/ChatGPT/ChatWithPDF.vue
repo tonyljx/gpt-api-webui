@@ -61,7 +61,7 @@ const newMessage = ref("");
 onMounted(
   () => {
 
-    if (!store.fileUrl) {
+    if (!store.fileName) {
       ElNotification({
         title: 'PDF对话',
         message: h('i', { style: 'color: teal' }, "请上传PDF或选择已上传的文件"),
@@ -177,9 +177,9 @@ function scrollToBottom() {
   nextTick(
     () => {
       const messageContainer = document.querySelector('.chat-box-content-container');
-      if (!messageContainer) {
-        messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
-      }
+
+      messageContainer.scrollTop = messageContainer?.scrollHeight - messageContainer?.clientHeight;
+
     }
   );
 }

@@ -138,7 +138,7 @@ const handleFileChange = () => {
   const URL = window.URL || window.webkitURL;
   const pdfUrl = URL.createObjectURL(file);
   store.setFileUrl(pdfUrl);
-  console.log(pdfUrl)
+  // console.log(pdfUrl)
 }
 
 // 上传文件的处理方式
@@ -175,8 +175,7 @@ function handleFileClick(data) {
   // console.log(data)
   store.setFileName(data.file_name)
   store.setFileId(data.fileid)
-  console.log(`store设置file_id ${data.fileid} 设置file_name ${data.file_name} `)
-  // router.push('/chatpdf');
+  // console.log(`store设置file_id ${data.fileid} 设置file_name ${data.file_name} `)
   ElMessage({
     message: '准备调准到PDF对话页面',
     type: 'success',
