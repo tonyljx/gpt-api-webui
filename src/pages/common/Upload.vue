@@ -7,7 +7,8 @@
     <label class="mt-6 w-8/12 flex flex-col items-center px-6 py-6 bg-white rounded-md shadow-md tracking-wide uppercase border border-blue cursor-pointer
                hover:outline-red hover:shadow-indigo-300 hover:outline-blue " v-loading="loading" @dragover.prevent
       @drop="handleFileChange">
-      <img class="w-8" src="../../assets/upload-file.svg" />
+      <!-- <img class="w-8" src="../../assets/upload-file.svg" /> -->
+      <el-icon class="el-icon--upload" size="35" color="#409EFF"><upload-filled /></el-icon>
       <span class="mt-2 text-base leading-normal" v-if="fileName">{{ fileName }}</span>
       <span class="mt-2 text-base leading-normal font-semibold" v-else>选择一个文件上传</span>
 
@@ -21,6 +22,10 @@
       Upload
     </button>
 
+    <button class="mt-3 bg-teal-300 rounded p-3  font-bold" @click="showStatus">
+      Click me
+    </button>
+
     <p v-if="uploadStatus">{{ uploadStatus }}</p>
 
 
@@ -32,17 +37,6 @@
           <div class="px-6 py-4 ">
             <h2 class="font-bold text-xl mb-2">Feature</h2>
             <p class="text-gray-700 text-base">支持PDF、OFFICE全家桶解析</p>
-          </div>
-        </div>
-      </a>
-
-      <a href="https://www.baidu.com" target="_blank">
-        <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transform
-        hover:-translate-y-1 transition duration-300 cursor-pointer
-        ">
-          <div class="px-6 py-4 ">
-            <h2 class="font-bold text-xl mb-2">Feature</h2>
-            <p class="text-gray-700 text-base">支持解析</p>
           </div>
         </div>
       </a>
@@ -93,6 +87,8 @@ import { ElNotification, ElMessage, ElMessageBox } from 'element-plus'
 import { h } from 'vue'
 import { store } from "@/store";
 import { Timer } from '@element-plus/icons-vue'
+import { UploadFilled } from '@element-plus/icons-vue'
+
 
 const router = useRouter();
 const fileName = ref(null)
