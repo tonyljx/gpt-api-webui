@@ -8,7 +8,10 @@ import { watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import apiUrl from '@/api';
 import axios from "axios";
+import { inject } from '@vercel/analytics';
 
+
+inject();
 // 全局状态
 const userStore = useUserStore();
 const currentNav = ref("")
